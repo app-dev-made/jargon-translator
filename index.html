@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#6c63ff" media="(prefers-color-scheme: light)"/>
+  <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)"/>
+  <meta name="description" content="Translate legal and business jargon into plain English instantly. Spot red flags, understand your rights, and know what documents really mean."/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Jargon Lens"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="Jargon Lens"/>
+  <meta property="og:title" content="Jargon Lens – Plain English Translator"/>
+  <meta property="og:description" content="Decode legal and business jargon in seconds."/>
+  <meta property="og:type" content="website"/>
+  <title>Jargon Lens – Plain English Translator</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #6c63ff;
+      --primary-dark: #4b44cc;
+      --accent: #00d4aa;
+      --danger: #ff4757;
+      --warning: #ffa502;
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --bg3: #0f3460;
+      --card: #1e2a4a;
+      --card2: #243354;
+      --text: #e8eaf6;
+      --text-muted: #8892b0;
+      --border: rgba(108,99,255,0.25);
+      --radius: 20px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f0f2ff; --bg2: #e8eaf6; --bg3: #d1d5f0;
+        --card: #ffffff; --card2: #f5f6ff;
+        --text: #1a1a2e; --text-muted: #555577;
+        --border: rgba(108,99,255,0.2);
+        --shadow: 0 8px 32px rgba(108,99,255,0.15);
+      }
+    }
+    html { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+      overflow-x: hidden;
+    }
+    /* ── HEADER ── */
+    .app-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-app-region: drag;
+    }
+    .app-title { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 36px; height: 36px; border-radius: 10px; }
+    .app-title h1 { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg,#6c63ff,#00d4aa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .header-actions { display:flex; gap:8px; -webkit-app-region:no-drag; }
+    .icon-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--text);
+      width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+      display: flex; align-items:center; justify-content:center; font-size:1.1rem;
+      transition: all .2s; -webkit-tap-highlight-color: transparent;
+    }
+    .icon-btn:hover { background: var(--primary); border-color: var(--primary); color:#fff; transform:scale(1.05); }
+
+    /* ── SCREENS ── */
+    .screen { display:none; flex-direction:column; min-height:calc(100vh - 70px); padding: 20px; }
+    .screen.active { display:flex; }
+
+    /* ── SCREEN 1: CAPTURE ── */
+    #screen-capture { align-items:center; justify-content:center; gap: 24px; }
+    .capture-hero { text-align:center; margin-bottom:8px; }
+    .capture-hero h2 { font-size:2rem; font-weight:800; line-height:1.2; }
+    .capture-hero h2 span { background:linear-gradient(135deg,#6c63ff,#00d4aa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .capture-hero p { margin-top:8px; color:var(--text-muted); font-size:0.95rem; max-width:300px; }
+    .scan-btn {
+      width: 100%; max-width: 340px;
+      padding: 22px 20px;
+      border-radius: var(--radius);
+      border: none; cursor: pointer;
+      display: flex; flex-direction:column; align-items:center; gap:10px;
+      font-family: inherit;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .scan-btn:active { transform: scale(0.96); }
+    .scan-btn.primary {
+      background: linear-gradient(135deg, #6c63ff, #4b44cc);
+      color: #fff; box-shadow: 0 8px 24px rgba(108,99,255,0.45);
+    }
+    .scan-btn.secondary {
+      background: var(--card); border: 2px solid var(--border); color: var(--text);
+    }
+    .scan-btn .btn-icon { font-size: 2.5rem; }
+    .scan-btn .btn-label { font-size: 1.1rem; font-weight:700; }
+    .scan-btn .btn-sub { font-size:0.8rem; opacity:0.75; }
+    .divider { display:flex; align-items:center; gap:12px; width:100%; max-width:340px; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+    .divider span { color:var(--text-muted); font-size:0.8rem; white-space:nowrap; }
+    .recent-label { font-size:0.8rem; color:var(--text-muted); width:100%; max-width:340px; text-align:left; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .recent-chips { display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:340px; }
+    .recent-chip {
+      padding:8px 14px; border-radius:100px; font-size:0.8rem;
+      background:var(--card); border:1px solid var(--border); color:var(--text-muted);
+      cursor:pointer; transition:all .2s;
+    }
+    .recent-chip:hover { border-color:var(--primary); color:var(--primary); }
+    /* file input hidden */
+    #file-input, #camera-input { display:none; }
+
+    /* ── PASTE MODAL ── */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7);
+      display:none; align-items:flex-end; justify-content:center;
+      z-index:200; backdrop-filter:blur(4px);
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-sheet {
+      background:var(--bg2); width:100%; max-width:600px;
+      border-radius: 28px 28px 0 0; padding:28px 20px 40px;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+    .modal-title { font-size:1.2rem; font-weight:700; margin-bottom:16px; }
+    .paste-textarea {
+      width:100%; min-height:180px; padding:16px;
+      background:var(--card); border:2px solid var(--border);
+      border-radius:16px; color:var(--text); font-size:0.95rem;
+      font-family:inherit; resize:vertical; outline:none;
+      transition:border-color .2s;
+    }
+    .paste-textarea:focus { border-color:var(--primary); }
+    .paste-textarea::placeholder { color:var(--text-muted); }
+    .modal-actions { display:flex; gap:12px; margin-top:16px; }
+    .btn {
+      padding:14px 24px; border-radius:14px; border:none; cursor:pointer;
+      font-family:inherit; font-size:0.95rem; font-weight:600;
+      transition:all .2s; -webkit-tap-highlight-color:transparent;
+    }
+    .btn-primary { background:var(--primary); color:#fff; flex:1; }
+    .btn-primary:hover { background:var(--primary-dark); }
+    .btn-ghost { background:var(--card); color:var(--text); border:1px solid var(--border); }
+
+    /* ── SCREEN 2: PROCESSING ── */
+    #screen-processing { align-items:center; justify-content:center; gap:24px; text-align:center; }
+    .processing-anim {
+      width:120px; height:120px; position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .processing-ring {
+      position:absolute; width:100%; height:100%;
+      border-radius:50%; border:3px solid transparent;
+      animation: spin 1.4s linear infinite;
+    }
+    .ring1 { border-top-color:var(--primary); animation-duration:1.4s; }
+    .ring2 { border-right-color:var(--accent); animation-duration:2s; width:85%; height:85%; }
+    .ring3 { border-bottom-color:var(--warning); animation-duration:2.8s; width:70%; height:70%; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .processing-icon { font-size:2.5rem; animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+    .processing-title { font-size:1.5rem; font-weight:700; }
+    .processing-steps { display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px; }
+    .proc-step {
+      display:flex; align-items:center; gap:10px; padding:12px 16px;
+      background:var(--card); border-radius:12px; font-size:0.9rem;
+      border:1px solid var(--border); transition:all .3s;
+    }
+    .proc-step.done { border-color:var(--accent); }
+    .proc-step.active { border-color:var(--primary); background:rgba(108,99,255,0.15); }
+    .step-icon { width:24px; text-align:center; }
+    .proc-step.done .step-icon::after { content:'✅'; }
+    .proc-step.active .step-icon::after { content:'⏳'; animation:pulse 1s infinite; }
+    .proc-step:not(.done):not(.active) .step-icon::after { content:'⬜'; }
+
+    /* ── SCREEN 3: CLARITY DASHBOARD ── */
+    #screen-result { gap:16px; padding-bottom:100px; }
+    .result-headline {
+      background:linear-gradient(135deg, rgba(108,99,255,.2), rgba(0,212,170,.15));
+      border:1px solid var(--border); border-radius:var(--radius);
+      padding:20px; text-align:center;
+    }
+    .result-headline .emoji { font-size:2rem; margin-bottom:8px; }
+    .result-headline h2 { font-size:1.3rem; font-weight:800; }
+    .result-headline .bottom-line { margin-top:8px; color:var(--text-muted); font-size:0.9rem; line-height:1.5; }
+    .section-title {
+      font-size:0.75rem; font-weight:700; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--text-muted); margin-bottom:4px;
+    }
+    /* Glossary */
+    .glossary-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+    .glossary-card {
+      background:var(--card); border-radius:16px; padding:16px;
+      border-left:4px solid var(--primary); display:flex; flex-direction:column; gap:6px;
+    }
+    .jargon-word { font-size:0.85rem; color:var(--text-muted); font-style:italic; }
+    .simple-word { font-size:1rem; font-weight:700; color:var(--primary); }
+    .simple-explain { font-size:0.85rem; color:var(--text-muted); line-height:1.5; }
+    /* Red flags */
+    .red-flags { display:flex; flex-direction:column; gap:8px; }
+    .flag-card {
+      background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.3);
+      border-radius:14px; padding:14px; display:flex; gap:12px; align-items:flex-start;
+    }
+    .flag-icon { font-size:1.2rem; flex-shrink:0; }
+    .flag-text strong { display:block; font-size:0.9rem; color:var(--danger); margin-bottom:4px; }
+    .flag-text span { font-size:0.85rem; color:var(--text-muted); line-height:1.5; }
+    /* Translation map */
+    .translation-map { display:flex; flex-direction:column; gap:10px; }
+    .translation-card {
+      background:var(--card); border-radius:16px; overflow:hidden;
+      border:1px solid var(--border);
+    }
+    .translation-original {
+      padding:14px 16px; background:rgba(255,71,87,0.08);
+      font-size:0.85rem; color:var(--text-muted); font-style:italic;
+      border-bottom:1px solid var(--border); line-height:1.5;
+    }
+    .translation-original::before { content:'📜 Original: '; font-weight:700; color:var(--text-muted); }
+    .translation-simple {
+      padding:14px 16px; font-size:0.9rem; line-height:1.6;
+    }
+    .translation-simple::before { content:'✨ Plain English: '; font-weight:700; color:var(--accent); }
+    /* Action area */
+    .action-area { display:flex; flex-direction:column; gap:10px; }
+    .action-btn {
+      width:100%; padding:18px 20px; border-radius:var(--radius); border:none;
+      cursor:pointer; font-family:inherit; font-size:1rem; font-weight:700;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      transition:all .25s cubic-bezier(.34,1.56,.64,1);
+      -webkit-tap-highlight-color:transparent;
+    }
+    .action-btn:active { transform:scale(0.97); }
+    .action-primary { background:linear-gradient(135deg,#6c63ff,#4b44cc); color:#fff; box-shadow:0 8px 24px rgba(108,99,255,0.4); }
+    .action-secondary { background:var(--card); color:var(--text); border:1px solid var(--border); }
+    .action-accent { background:linear-gradient(135deg,#00d4aa,#00a884); color:#fff; box-shadow:0 8px 24px rgba(0,212,170,0.35); }
+    /* Share/copy toast */
+    .toast {
+      position:fixed; bottom:calc(20px + var(--safe-bottom)); left:50%;
+      transform:translateX(-50%) translateY(100px);
+      background:var(--card); border:1px solid var(--border);
+      padding:12px 20px; border-radius:100px; font-size:0.9rem;
+      box-shadow:var(--shadow); z-index:300; transition:transform .3s ease;
+      white-space:nowrap;
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    /* Draft modal */
+    .draft-modal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.8);
+      display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+      backdrop-filter:blur(4px);
+    }
+    .draft-modal.open { display:flex; }
+    .draft-card {
+      background:var(--bg2); border-radius:var(--radius); padding:24px;
+      width:100%; max-width:480px; max-height:80vh; overflow-y:auto;
+      border:1px solid var(--border);
+    }
+    .draft-card h3 { font-size:1.1rem; font-weight:700; margin-bottom:16px; }
+    .draft-text {
+      background:var(--card); border-radius:14px; padding:16px;
+      font-size:0.9rem; line-height:1.7; color:var(--text);
+      border:1px solid var(--border); margin-bottom:16px;
+      white-space:pre-wrap; user-select:all;
+    }
+    /* API key setup */
+    .api-setup {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:var(--radius); padding:20px; width:100%; max-width:340px;
+    }
+    .api-setup h3 { font-size:1rem; font-weight:700; margin-bottom:8px; }
+    .api-setup p { font-size:0.85rem; color:var(--text-muted); margin-bottom:16px; line-height:1.5; }
+    .api-input {
+      width:100%; padding:12px 16px; border-radius:12px;
+      background:var(--bg2); border:2px solid var(--border);
+      color:var(--text); font-size:0.9rem; outline:none; margin-bottom:12px;
+      transition:border-color .2s;
+    }
+    .api-input:focus { border-color:var(--primary); }
+    /* Settings panel */
+    #settings-panel {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7);
+      display:none; align-items:flex-end; justify-content:center; z-index:200;
+      backdrop-filter:blur(4px);
+    }
+    #settings-panel.open { display:flex; }
+    .settings-sheet {
+      background:var(--bg2); width:100%; max-width:600px;
+      border-radius:28px 28px 0 0; padding:28px 20px 40px;
+    }
+    .settings-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 0; border-bottom:1px solid var(--border);
+    }
+    .settings-row:last-child { border-bottom:none; }
+    .settings-label { font-size:0.95rem; }
+    .settings-sub { font-size:0.8rem; color:var(--text-muted); margin-top:2px; }
+    /* Toggle switch */
+    .toggle { position:relative; width:50px; height:28px; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider {
+      position:absolute; cursor:pointer; inset:0;
+      background:var(--border); border-radius:100px; transition:.3s;
+    }
+    .toggle-slider::before {
+      content:''; position:absolute; width:22px; height:22px; border-radius:50%;
+      background:#fff; top:3px; left:3px; transition:.3s;
+    }
+    .toggle input:checked + .toggle-slider { background:var(--primary); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(22px); }
+    /* History screen */
+    #screen-history { gap:16px; padding-bottom:100px; }
+    .history-empty { text-align:center; padding:60px 20px; color:var(--text-muted); }
+    .history-item {
+      background:var(--card); border:1px solid var(--border); border-radius:16px;
+      padding:16px; cursor:pointer; transition:all .2s;
+    }
+    .history-item:hover { border-color:var(--primary); }
+    .history-item h4 { font-size:0.95rem; font-weight:600; margin-bottom:4px; }
+    .history-item p { font-size:0.8rem; color:var(--text-muted); }
+    .history-item .history-date { font-size:0.75rem; color:var(--text-muted); margin-top:8px; }
+    /* Bottom nav */
+    .bottom-nav {
+      position:fixed; bottom:0; left:0; right:0;
+      background:var(--bg2); border-top:1px solid var(--border);
+      padding:10px 0 calc(10px + var(--safe-bottom));
+      display:flex; justify-content:space-around;
+      z-index:100; backdrop-filter:blur(12px);
+    }
+    .nav-btn {
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      padding:6px 20px; border-radius:14px; cursor:pointer;
+      transition:all .2s; border:none; background:transparent;
+      color:var(--text-muted); font-family:inherit;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .nav-btn.active { color:var(--primary); }
+    .nav-btn .nav-icon { font-size:1.3rem; }
+    .nav-btn .nav-label { font-size:0.7rem; font-weight:600; }
+    /* Responsive */
+    @media (min-width:600px) {
+      .screen { max-width:480px; margin:0 auto; }
+      #screen-capture { padding:40px 20px; }
+      .glossary-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (min-width:900px) {
+      .app-header { max-width:none; }
+      .bottom-nav { max-width:600px; left:50%; transform:translateX(-50%); border-radius:20px 20px 0 0; }
+    }
+    /* Animations */
+    .fade-in { animation:fadeIn .4s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    /* Install banner */
+    .install-banner {
+      background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,212,170,.1));
+      border:1px solid var(--border); border-radius:16px; padding:16px;
+      display:none; align-items:center; gap:12px; margin-bottom:8px;
+      width:100%; max-width:340px;
+    }
+    .install-banner.show { display:flex; }
+    .install-banner p { flex:1; font-size:0.85rem; line-height:1.4; }
+    .install-banner button { background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:10px; font-size:0.85rem; font-weight:700; cursor:pointer; white-space:nowrap; }
+  </style>
+</head>
+<body>
+
+<!-- ── APP HEADER ── -->
+<header class="app-header">
+  <div class="app-title">
+    <img src="icons/icon-72x72.png" alt="Jargon Lens" class="logo-icon" onerror="this.style.display='none'"/>
+    <h1>Jargon Lens</h1>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="showScreen('history')" title="History" aria-label="View history">📋</button>
+    <button class="icon-btn" onclick="openSettings()" title="Settings" aria-label="Settings">⚙️</button>
+  </div>
+</header>
+
+<!-- ── SCREEN 1: CAPTURE ── -->
+<section id="screen-capture" class="screen active" role="main" aria-label="Capture document">
+  <div class="capture-hero fade-in">
+    <h2>Decode Any<br/><span>Scary Document</span></h2>
+    <p>Legal letters, work contracts, rental agreements — we'll translate the confusing stuff into plain language.</p>
+  </div>
+
+  <div class="install-banner" id="install-banner">
+    <span style="font-size:1.3rem">📲</span>
+    <p><strong>Add to Home Screen</strong> for faster access anytime.</p>
+    <button onclick="promptInstall()">Install</button>
+  </div>
+
+  <!-- API Key setup (shown when no key saved) -->
+  <div class="api-setup" id="api-setup" style="display:none;">
+    <h3>🔑 Connect AI (Optional)</h3>
+    <p>Add your free Google Gemini API key for real AI-powered translations. Without it, we'll show you a sample analysis.</p>
+    <input type="password" class="api-input" id="api-key-input" placeholder="Paste your Gemini API key here..."/>
+    <button class="btn btn-primary" style="width:100%" onclick="saveApiKey()">Save Key</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="skipApiKey()">Use Demo Mode</button>
+  </div>
+
+  <button class="scan-btn primary" id="scan-doc-btn" onclick="triggerCamera()" aria-label="Scan document with camera">
+    <span class="btn-icon">📷</span>
+    <span class="btn-label">Scan Document</span>
+    <span class="btn-sub">Point camera at any confusing text</span>
+  </button>
+
+  <div class="divider"><span>or</span></div>
+
+  <button class="scan-btn secondary" onclick="openPasteModal()" aria-label="Paste text to translate">
+    <span class="btn-icon">📋</span>
+    <span class="btn-label">Paste Email / Text</span>
+    <span class="btn-sub">Copy & paste from any app</span>
+  </button>
+
+  <button class="scan-btn secondary" onclick="triggerFileUpload()" aria-label="Upload a file">
+    <span class="btn-icon">📁</span>
+    <span class="btn-label">Upload a File</span>
+    <span class="btn-sub">Images, PDFs, or text files</span>
+  </button>
+
+  <div class="recent-label">Try these examples</div>
+  <div class="recent-chips">
+    <span class="recent-chip" onclick="loadExample('lease')">🏠 Lease clause</span>
+    <span class="recent-chip" onclick="loadExample('tos')">📱 App Terms</span>
+    <span class="recent-chip" onclick="loadExample('medical')">🏥 Medical form</span>
+    <span class="recent-chip" onclick="loadExample('employment')">💼 Job contract</span>
+  </div>
+
+  <input type="file" id="camera-input" accept="image/*" capture="environment"/>
+  <input type="file" id="file-input" accept="image/*,application/pdf,text/*"/>
+</section>
+
+<!-- ── SCREEN 2: PROCESSING ── -->
+<section id="screen-processing" class="screen" role="status" aria-label="Processing document" aria-live="polite">
+  <div class="processing-anim">
+    <div class="processing-ring ring1"></div>
+    <div class="processing-ring ring2"></div>
+    <div class="processing-ring ring3"></div>
+    <span class="processing-icon">🔍</span>
+  </div>
+  <h2 class="processing-title">Reading between the lines…</h2>
+  <p style="color:var(--text-muted);font-size:0.9rem;max-width:260px;">Translating legal speak into human speak. Hang tight!</p>
+  <div class="processing-steps">
+    <div class="proc-step" id="step1"><span class="step-icon"></span><span>Scanning the document</span></div>
+    <div class="proc-step" id="step2"><span class="step-icon"></span><span>Spotting red flags</span></div>
+    <div class="proc-step" id="step3"><span class="step-icon"></span><span>Building your glossary</span></div>
+    <div class="proc-step" id="step4"><span class="step-icon"></span><span>Writing plain English</span></div>
+  </div>
+</section>
+
+<!-- ── SCREEN 3: CLARITY DASHBOARD ── -->
+<section id="screen-result" class="screen" role="main" aria-label="Analysis results">
+  <!-- populated by JS -->
+</section>
+
+<!-- ── SCREEN 4: HISTORY ── -->
+<section id="screen-history" class="screen" role="main" aria-label="History">
+  <h2 style="font-size:1.3rem;font-weight:800;">📋 Your History</h2>
+  <div id="history-list"></div>
+</section>
+
+<!-- ── PASTE MODAL ── -->
+<div class="modal-overlay" id="paste-modal" role="dialog" aria-modal="true" aria-label="Paste text" onclick="closePasteModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">📋 Paste Your Text</h2>
+    <textarea class="paste-textarea" id="paste-text" placeholder="Paste the confusing text here… lease agreements, work emails, terms of service, anything that made you go 'huh?'"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closePasteModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="analyzeText()">🔍 Decode It!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DRAFT EMAIL MODAL ── -->
+<div class="draft-modal" id="draft-modal" role="dialog" aria-modal="true" aria-label="Draft email">
+  <div class="draft-card">
+    <h3>✉️ Your Follow-Up Question</h3>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">Copy this and send it to your bank, landlord, boss, or whoever sent you the confusing document.</p>
+    <div class="draft-text" id="draft-text">Loading…</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="copyDraft()" style="flex:1">📋 Copy</button>
+      <button class="btn btn-ghost" onclick="closeDraftModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETTINGS PANEL ── -->
+<div id="settings-panel" role="dialog" aria-modal="true" aria-label="Settings" onclick="closeSettings(event)">
+  <div class="settings-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">⚙️ Settings</h2>
+    <div class="settings-row">
+      <div><div class="settings-label">Gemini API Key</div><div class="settings-sub" id="api-key-status">Not set — using demo mode</div></div>
+      <button class="btn btn-ghost" onclick="resetApiKey()" style="padding:8px 14px;font-size:0.8rem;">Change</button>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Dark Mode</div><div class="settings-sub">Follow system theme</div></div>
+      <label class="toggle"><input type="checkbox" id="dark-toggle" checked/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Save History</div><div class="settings-sub">Keep past analyses locally</div></div>
+      <label class="toggle"><input type="checkbox" id="history-toggle" checked/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Simple Word Mode</div><div class="settings-sub">Replace hard words in the UI too</div></div>
+      <label class="toggle"><input type="checkbox" id="simple-toggle"/><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Clear All History</div><div class="settings-sub">Remove all saved analyses</div></div>
+      <button class="btn btn-ghost" onclick="clearHistory()" style="padding:8px 14px;font-size:0.8rem;color:var(--danger);">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-btn active" id="nav-scan" onclick="navTo('capture','nav-scan')" aria-label="Scan">
+    <span class="nav-icon">🔍</span><span class="nav-label">Scan</span>
+  </button>
+  <button class="nav-btn" id="nav-result" onclick="navTo('result','nav-result')" aria-label="Results">
+    <span class="nav-icon">💡</span><span class="nav-label">Results</span>
+  </button>
+  <button class="nav-btn" id="nav-history" onclick="navTo('history','nav-history')" aria-label="History">
+    <span class="nav-icon">📋</span><span class="nav-label">History</span>
+  </button>
+</nav>
+
+<script>
+// ── STATE ──
+let currentAnalysis = null;
+let deferredInstallPrompt = null;
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    console.log('[JL] SW registered:', reg.scope);
+    reg.addEventListener('updatefound', () => {
+      showToast('🆕 App updated! Refresh for the latest version.');
+    });
+  }).catch(err => console.error('[JL] SW error:', err));
+}
+
+// ── INSTALL PROMPT ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('install-banner').classList.add('show');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  showToast('🎉 Jargon Lens installed!');
+});
+function promptInstall() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(r => {
+      if (r.outcome === 'accepted') showToast('✅ Installing…');
+      deferredInstallPrompt = null;
+    });
+  }
+}
+
+// ── URL PARAMS (shortcuts / share target) ──
+(function handleStartupParams() {
+  const params = new URLSearchParams(location.search);
+  const action = params.get('action');
+  const text = params.get('text');
+  if (text) { setTimeout(() => { document.getElementById('paste-text').value = decodeURIComponent(text); openPasteModal(); }, 500); }
+  if (action === 'scan') { setTimeout(triggerCamera, 500); }
+  if (action === 'paste') { setTimeout(openPasteModal, 500); }
+  if (action === 'history') { setTimeout(() => navTo('history','nav-history'), 300); }
+})();
+
+// ── NAVIGATION ──
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) { el.classList.add('active'); el.classList.add('fade-in'); }
+}
+function navTo(screen, navId) {
+  showScreen(screen);
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(navId)?.classList.add('active');
+  if (screen === 'history') renderHistory();
+}
+
+// ── API KEY ──
+function getApiKey() { return localStorage.getItem('jl_api_key'); }
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) { showToast('⚠️ Please paste your API key'); return; }
+  localStorage.setItem('jl_api_key', key);
+  document.getElementById('api-setup').style.display = 'none';
+  updateApiStatus();
+  showToast('✅ API key saved!');
+}
+function skipApiKey() {
+  localStorage.setItem('jl_demo_mode', '1');
+  document.getElementById('api-setup').style.display = 'none';
+}
+function resetApiKey() {
+  localStorage.removeItem('jl_api_key');
+  localStorage.removeItem('jl_demo_mode');
+  closeSettings();
+  document.getElementById('api-setup').style.display = 'block';
+  updateApiStatus();
+}
+function updateApiStatus() {
+  const el = document.getElementById('api-key-status');
+  if (el) el.textContent = getApiKey() ? '✅ API key saved' : 'Not set — using demo mode';
+}
+updateApiStatus();
+
+// ── STARTUP: show API setup if needed ──
+(function() {
+  const hasKey = localStorage.getItem('jl_api_key');
+  const isDemoMode = localStorage.getItem('jl_demo_mode');
+  if (!hasKey && !isDemoMode) {
+    document.getElementById('api-setup').style.display = 'block';
+  }
+})();
+
+// ── FILE INPUTS ──
+function triggerCamera() {
+  document.getElementById('camera-input').click();
+}
+function triggerFileUpload() {
+  document.getElementById('file-input').click();
+}
+document.getElementById('camera-input').addEventListener('change', function() {
+  if (this.files[0]) processImageFile(this.files[0]);
+});
+document.getElementById('file-input').addEventListener('change', function() {
+  if (this.files[0]) processImageFile(this.files[0]);
+});
+
+function processImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const base64 = e.target.result.split(',')[1];
+    const mimeType = file.type || 'image/jpeg';
+    runAnalysis({ type: 'image', base64, mimeType, label: file.name });
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── PASTE MODAL ──
+function openPasteModal() {
+  document.getElementById('paste-modal').classList.add('open');
+  setTimeout(() => document.getElementById('paste-text').focus(), 300);
+}
+function closePasteModal(e) {
+  if (!e || e.target === document.getElementById('paste-modal')) {
+    document.getElementById('paste-modal').classList.remove('open');
+  }
+}
+function analyzeText() {
+  const text = document.getElementById('paste-text').value.trim();
+  if (!text) { showToast('⚠️ Please paste some text first!'); return; }
+  document.getElementById('paste-modal').classList.remove('open');
+  runAnalysis({ type: 'text', text, label: text.slice(0, 60) + '…' });
+}
+
+// ── EXAMPLE TEXTS ──
+const EXAMPLES = {
+  lease: `The Tenant shall indemnify and hold harmless the Landlord from any and all claims, damages, losses, costs, and expenses, including reasonable attorneys' fees, arising out of or resulting from Tenant's use of the premises. Furthermore, any breach of this covenant shall render the security deposit forfeited in its entirety, notwithstanding any other remedy available at law or in equity.`,
+  tos: `By accessing or using our Service, you agree that we may collect, use, and share your personal information, usage data, and device identifiers with our affiliated third-party partners for targeted advertising, analytics, and product improvement purposes. You waive your right to participate in any class action lawsuit and agree to binding arbitration for any disputes.`,
+  medical: `Patient hereby grants informed consent to the aforementioned procedure and acknowledges all attendant risks including but not limited to morbidity, mortality, and unforeseen complications. Patient waives all claims against the provider for outcomes within the standard of care. Facility retains right to disclose PHI to affiliated entities under HIPAA Business Associate Agreements.`,
+  employment: `Employee acknowledges that all intellectual property, inventions, discoveries, and work product created during the term of employment, whether during business hours or not, shall be the exclusive property of the Company. Employee further agrees to a 24-month post-employment non-compete restriction within a 100-mile radius and non-solicitation of clients and employees.`
+};
+function loadExample(type) {
+  document.getElementById('paste-text').value = EXAMPLES[type] || '';
+  openPasteModal();
+}
+
+// ── ANALYSIS ENGINE ──
+async function runAnalysis(input) {
+  showScreen('processing');
+  navTo('processing-internal','nav-scan');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-result').classList.add('active');
+
+  const steps = ['step1','step2','step3','step4'];
+  for (let i = 0; i < steps.length; i++) {
+    await delay(600);
+    if (i > 0) document.getElementById(steps[i-1]).className = 'proc-step done';
+    document.getElementById(steps[i]).className = 'proc-step active';
+  }
+
+  let result;
+  const apiKey = getApiKey();
+
+  if (apiKey && input.type === 'text') {
+    result = await callGeminiText(input.text, apiKey);
+  } else if (apiKey && input.type === 'image') {
+    result = await callGeminiImage(input.base64, input.mimeType, apiKey);
+  } else {
+    await delay(800);
+    result = getDemoResult(input.label);
+  }
+
+  document.getElementById(steps[steps.length-1]).className = 'proc-step done';
+  await delay(500);
+
+  currentAnalysis = { ...result, label: input.label, date: new Date().toISOString() };
+
+  // Save to history
+  if (localStorage.getItem('history-toggle') !== 'false') {
+    saveToHistory(currentAnalysis);
+  }
+
+  renderResult(currentAnalysis);
+  showScreen('result');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── GEMINI API ──
+async function callGeminiText(text, apiKey) {
+  const prompt = buildPrompt(text);
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{responseMimeType:'application/json'} })
+    });
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const jsonStr = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return JSON.parse(jsonStr);
+  } catch(e) {
+    console.error(e);
+    showToast('⚠️ AI call failed — showing demo result');
+    return getDemoResult(text.slice(0,60));
+  }
+}
+
+async function callGeminiImage(base64, mimeType, apiKey) {
+  const prompt = buildPrompt('[Image document — extract and translate all text]');
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{parts:[{text:prompt},{inlineData:{mimeType,data:base64}}]}], generationConfig:{responseMimeType:'application/json'} })
+    });
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const jsonStr = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return JSON.parse(jsonStr);
+  } catch(e) {
+    console.error(e);
+    showToast('⚠️ AI call failed — showing demo result');
+    return getDemoResult('Scanned document');
+  }
+}
+
+function buildPrompt(text) {
+  return `You are a Legal and Business Plain-English Translator. Analyze the following text and return a JSON object (no markdown, just raw JSON) with exactly this structure:
+
+{
+  "emoji": "one emoji that summarizes the vibe (good=✅, neutral=📋, warning=⚠️, bad=🚨)",
+  "headline": "one punchy sentence like 'Good news: you aren't being sued' or 'Watch out: this costs you money'",
+  "bottomLine": "one plain sentence explaining what this document actually means for the reader, written for a 6th grader",
+  "glossary": [
+    { "jargon": "hard word", "simple": "easy word", "explain": "one sentence explanation in plain english" }
+  ],
+  "redFlags": [
+    { "title": "short flag title", "description": "plain english explanation of why this is a concern" }
+  ],
+  "translations": [
+    { "original": "original jargon sentence", "simple": "plain english version" }
+  ],
+  "draftEmail": "a friendly, professional follow-up email or question the user can send to ask for clarification or push back"
+}
+
+Rules:
+- Glossary: pick the 3-5 hardest jargon words/phrases
+- Red flags: find any terms that cost money, waive rights, create lock-ins, or restrict freedom. If none, return empty array.
+- Translations: pick 2-4 of the most confusing sentences and rewrite them simply
+- Tone: helpful, slightly witty, never scary. Like a smart friend explaining it over coffee.
+- All text must be readable by a 6th grader (short sentences, common words)
+
+TEXT TO ANALYZE:
+${text}`;
+}
+
+// ── DEMO RESULT ──
+function getDemoResult(label) {
+  return {
+    emoji: '⚠️',
+    headline: "Heads up: this document has some things worth knowing about.",
+    bottomLine: "This looks like a legal agreement. There are a few parts where you give up some of your rights or agree to pay money. Keep reading — we broke it all down for you.",
+    glossary: [
+      { jargon: "indemnify", simple: "pay for problems", explain: "This means if something goes wrong, YOU have to pay for it — even if it wasn't totally your fault." },
+      { jargon: "aforementioned", simple: "the thing we just talked about", explain: "Fancy legal word for 'the stuff mentioned earlier in this document.'" },
+      { jargon: "arbitration", simple: "private court", explain: "Instead of going to a real court, you'd have to fight your case in a private setting — and you usually can't appeal." },
+      { jargon: "non-solicitation", simple: "no poaching rule", explain: "You can't try to take their customers or employees when you leave." }
+    ],
+    redFlags: [
+      { title: "💸 You Pay If Things Go Wrong", description: "The 'indemnify' clause means if there's any problem or lawsuit — even one that isn't your fault — you might have to pay the legal bills." },
+      { title: "⚖️ No Regular Court", description: "You're giving up your right to take this to a normal court. Arbitration is faster, but it usually favors companies over regular people." },
+      { title: "🔒 You May Be Locked In", description: "There could be penalties if you want to leave early or break any part of this agreement." }
+    ],
+    translations: [
+      { original: "The party of the first part shall indemnify and hold harmless the party of the second part…", simple: "If anything bad happens, YOU have to cover the costs — not them." },
+      { original: "Any disputes shall be resolved through binding arbitration…", simple: "If you have a problem with this, you can't go to regular court. You have to use their private system instead." }
+    ],
+    draftEmail: `Subject: Question About Our Agreement
+
+Hi [Name],
+
+Thank you for sending over the document. Before I sign, I had a couple of questions I'd love to clarify:
+
+1. The indemnification clause (Section X) — can you help me understand exactly what situations would require me to cover costs? I want to make sure I understand my responsibility here.
+
+2. Regarding the arbitration clause — is there any flexibility here, or is this a standard part of all your agreements?
+
+I'm happy to move forward, I just want to make sure I fully understand what I'm agreeing to. Thanks so much for your patience!
+
+Best,
+[Your Name]`
+  };
+}
+
+// ── RENDER RESULT ──
+function renderResult(r) {
+  const el = document.getElementById('screen-result');
+  el.innerHTML = `
+    <div class="result-headline fade-in">
+      <div class="emoji">${r.emoji}</div>
+      <h2>${escHtml(r.headline)}</h2>
+      <p class="bottom-line"><strong>What this actually means for you:</strong> ${escHtml(r.bottomLine)}</p>
+    </div>
+
+    ${r.glossary?.length ? `
+    <div class="fade-in">
+      <div class="section-title">📚 Jargon Glossary — Friend-Speak</div>
+      <div class="glossary-grid">
+        ${r.glossary.map(g => `
+          <div class="glossary-card">
+            <div class="jargon-word">"${escHtml(g.jargon)}"</div>
+            <div class="simple-word">= ${escHtml(g.simple)}</div>
+            <div class="simple-explain">${escHtml(g.explain)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : ''}
+
+    ${r.redFlags?.length ? `
+    <div class="fade-in">
+      <div class="section-title">🚨 Red Flags — Watch Out For These</div>
+      <div class="red-flags">
+        ${r.redFlags.map(f => `
+          <div class="flag-card">
+            <span class="flag-icon">⚠️</span>
+            <div class="flag-text">
+              <strong>${escHtml(f.title)}</strong>
+              <span>${escHtml(f.description)}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : `
+    <div class="flag-card" style="border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.08)">
+      <span class="flag-icon">✅</span>
+      <div class="flag-text"><strong>No major red flags found!</strong><span>This document looks pretty straightforward.</span></div>
+    </div>`}
+
+    ${r.translations?.length ? `
+    <div class="fade-in">
+      <div class="section-title">🔄 Translation Map — Before & After</div>
+      <div class="translation-map">
+        ${r.translations.map(t => `
+          <div class="translation-card">
+            <div class="translation-original">${escHtml(t.original)}</div>
+            <div class="translation-simple">${escHtml(t.simple)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="action-area fade-in">
+      <button class="action-btn action-primary" onclick="openDraftEmail()">
+        ✉️ Draft a Follow-Up Question
+      </button>
+      <button class="action-btn action-accent" onclick="shareResult()">
+        📤 Share This Analysis
+      </button>
+      <button class="action-btn action-secondary" onclick="startOver()">
+        🔍 Scan Another Document
+      </button>
+    </div>
+  `;
+}
+
+// ── DRAFT EMAIL ──
+function openDraftEmail() {
+  if (!currentAnalysis?.draftEmail) { showToast('No draft available yet'); return; }
+  document.getElementById('draft-text').textContent = currentAnalysis.draftEmail;
+  document.getElementById('draft-modal').classList.add('open');
+}
+function closeDraftModal() { document.getElementById('draft-modal').classList.remove('open'); }
+function copyDraft() {
+  navigator.clipboard?.writeText(currentAnalysis?.draftEmail || '').then(() => {
+    showToast('✅ Copied to clipboard!');
+    closeDraftModal();
+  }).catch(() => {
+    showToast('⚠️ Please select and copy the text manually.');
+  });
+}
+
+// ── SHARE ──
+async function shareResult() {
+  const text = currentAnalysis ? `${currentAnalysis.headline}\n\n${currentAnalysis.bottomLine}` : 'Check out Jargon Lens!';
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Jargon Lens Analysis', text, url: location.href });
+    } catch(e) { /* cancelled */ }
+  } else {
+    navigator.clipboard?.writeText(text).then(() => showToast('📋 Analysis copied!'));
+  }
+}
+
+// ── START OVER ──
+function startOver() {
+  document.getElementById('paste-text').value = '';
+  navTo('capture','nav-scan');
+  document.querySelectorAll('#screen-processing .proc-step').forEach(s => s.className = 'proc-step');
+}
+
+// ── HISTORY ──
+function saveToHistory(analysis) {
+  const history = JSON.parse(localStorage.getItem('jl_history') || '[]');
+  history.unshift({ ...analysis, id: Date.now() });
+  if (history.length > 50) history.splice(50);
+  localStorage.setItem('jl_history', JSON.stringify(history));
+}
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('jl_history') || '[]');
+  const el = document.getElementById('history-list');
+  if (!history.length) {
+    el.innerHTML = '<div class="history-empty">📭<br/><br/>No analyses yet.<br/>Scan your first document to get started!</div>';
+    return;
+  }
+  el.innerHTML = history.map(h => `
+    <div class="history-item" onclick="loadHistoryItem(${h.id})">
+      <h4>${h.emoji || '📋'} ${escHtml(h.headline || h.label || 'Analysis')}</h4>
+      <p>${escHtml(h.bottomLine || 'Tap to view details')}</p>
+      <div class="history-date">${new Date(h.date).toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+    </div>
+  `).join('');
+}
+function loadHistoryItem(id) {
+  const history = JSON.parse(localStorage.getItem('jl_history') || '[]');
+  const item = history.find(h => h.id === id);
+  if (item) {
+    currentAnalysis = item;
+    renderResult(item);
+    navTo('result','nav-result');
+  }
+}
+function clearHistory() {
+  if (confirm('Clear all history? This cannot be undone.')) {
+    localStorage.removeItem('jl_history');
+    renderHistory();
+    showToast('🗑️ History cleared');
+  }
+}
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) { el.classList.add('active'); }
+}
+
+// ── SETTINGS ──
+function openSettings() { document.getElementById('settings-panel').classList.add('open'); }
+function closeSettings(e) {
+  if (!e || e.target === document.getElementById('settings-panel')) {
+    document.getElementById('settings-panel').classList.remove('open');
+  }
+}
+document.getElementById('history-toggle').addEventListener('change', function() {
+  localStorage.setItem('history-toggle', this.checked);
+});
+
+// ── TOAST ──
+function showToast(msg, duration=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── UTILS ──
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePasteModal(); closeSettings(); closeDraftModal();
+    document.getElementById('draft-modal').classList.remove('open');
+  }
+});
+
+// ── HANDLE FILE API (file_handlers) ──
+if ('launchQueue' in window) {
+  window.launchQueue.setConsumer(launchParams => {
+    if (launchParams.files?.length) {
+      launchParams.files[0].getFile().then(file => processImageFile(file));
+    }
+  });
+}
+</script>
+</body>
+</html>
