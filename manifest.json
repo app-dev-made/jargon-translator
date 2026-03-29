@@ -1,156 +1,22 @@
 {
-  "id": "/",
-  "name": "Jargon Lens - Plain English Translator",
+  "name": "Jargon Lens",
   "short_name": "Jargon Lens",
-  "description": "Instantly translate legal, business, and financial jargon into plain English. Upload a document or paste text to get a simple, friendly breakdown of what it really means.",
   "start_url": "index.html",
-  "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "standalone",
-    "minimal-ui"
-  ],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
-  "orientation": "any",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": [
-    "utilities",
-    "productivity",
-    "education",
-    "finance"
-  ],
-  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
-  "prefer_related_applications": false,
-  "related_applications": [],
   "icons": [
     {
-      "src": "launchericon-192x192.png",
+      "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "launchericon-512x512.png",
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-  ],
-  "screenshots": [
-    {
-      "src": "screenshots/screen1.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Scan a document to decode jargon instantly"
-    },
-    {
-      "src": "screenshots/screen2.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Get a plain English breakdown with red flags highlighted"
+      "purpose": "maskable"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "Scan Document",
-      "short_name": "Scan",
-      "description": "Open camera to scan a document",
-      "url": "index.html?action=scan",
-      "icons": [
-        {
-          "src": "icons/icon-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Paste Text",
-      "short_name": "Paste",
-      "description": "Paste text to translate jargon",
-      "url": "index.html?action=paste",
-      "icons": [
-        {
-          "src": "icons/icon-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "My History",
-      "short_name": "History",
-      "description": "View past translations",
-      "url": "index.html?action=history",
-      "icons": [
-        {
-          "src": "icons/icon-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "share_target": {
-    "action": "index.html",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "document",
-          "accept": [
-            "image/*",
-            "application/pdf",
-            "text/*"
-          ]
-        }
-      ]
-    }
-  },
-  "launch_handler": {
-    "client_mode": [
-      "navigate-existing",
-      "auto"
-    ]
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+jargonlens",
-      "url": "index.html?text=%s"
-    }
-  ],
-  "file_handlers": [
-    {
-      "action": "index.html",
-      "accept": {
-        "image/*": [
-          ".jpg",
-          ".jpeg",
-          ".png",
-          ".gif",
-          ".webp"
-        ],
-        "text/plain": [
-          ".txt"
-        ],
-        "application/pdf": [
-          ".pdf"
-        ]
-      }
-    }
-  ],
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "handle_links": "preferred",
-  "scope_extensions": []
+  ]
 }
