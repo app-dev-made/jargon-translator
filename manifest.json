@@ -1,11 +1,12 @@
 {
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
-  "description": "Decode legal and business jargon in seconds.",
+  "description": "Translate legal and business jargon into plain English instantly.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -18,6 +19,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Jargon Lens Desktop"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Jargon Lens Mobile"
     }
   ]
 }
