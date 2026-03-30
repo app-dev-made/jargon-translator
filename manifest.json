@@ -1,12 +1,13 @@
 {
+  "id": "com.jargontranslator.app",
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
   "description": "Translate legal and business jargon into plain English instantly.",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
-  "orientation": "portrait",
+  "categories": ["productivity", "utilities"],
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -18,7 +19,7 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
