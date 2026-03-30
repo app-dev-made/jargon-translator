@@ -2,33 +2,38 @@
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "./?source=pwa",
-  "start_url": "./index.html",
-  "scope": "./",
+  "id": "/jargon-translator/",
+  "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
+  "scope": "/jargon-translator/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": [
+    "window-controls-overlay",
+    "tabbed",
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities", "business", "education"],
+  "categories": ["productivity", "utilities", "business", "education", "legal"],
   "lang": "en-US",
   "dir": "ltr",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./icons/icon-192x192.png",
+      "src": "/jargon-translator/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512x512.png",
+      "src": "/jargon-translator/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/maskable-icon-512x512.png",
+      "src": "/jargon-translator/icons/maskable-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -36,66 +41,72 @@
   ],
   "screenshots": [
     {
-      "src": "./screenshots/mobile-home.png",
+      "src": "/jargon-translator/screenshots/mobile-home.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Instant jargon decoding on your phone"
+      "label": "Deep Jargon Analysis on Mobile"
     },
     {
-      "src": "./screenshots/desktop-home.png",
+      "src": "/jargon-translator/screenshots/desktop-home.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Analyze complex contracts on your computer"
+      "label": "Enterprise Contract Review on Desktop"
     }
   ],
   "shortcuts": [
     {
       "name": "Scan Document",
       "short_name": "Scan",
-      "description": "Open camera to scan physical papers",
-      "url": "./index.html?action=scan",
-      "icons": [
-        {
-          "src": "./icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png",
-          "purpose": "any"
-        }
-      ]
+      "description": "Scan physical documents using AI Vision",
+      "url": "/jargon-translator/index.html?action=scan",
+      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Paste Text",
+      "name": "Paste Jargon",
       "short_name": "Paste",
-      "description": "Instantly paste text for analysis",
-      "url": "./index.html?action=paste",
-      "icons": [
-        {
-          "src": "./icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png",
-          "purpose": "any"
-        }
-      ]
+      "description": "Instantly translate clipboard text",
+      "url": "/jargon-translator/index.html?action=paste",
+      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "View History",
+      "short_name": "History",
+      "description": "Access your previous translations",
+      "url": "/jargon-translator/index.html?action=history",
+      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ],
   "file_handlers": [
     {
-      "action": "./index.html",
+      "action": "/jargon-translator/index.html",
       "accept": {
-        "image/*": [".jpg", ".jpeg", ".png"],
-        "application/pdf": [".pdf"]
+        "image/*": [".jpg", ".jpeg", ".png", ".webp"],
+        "application/pdf": [".pdf"],
+        "text/plain": [".txt"]
       }
     }
   ],
   "share_target": {
-    "action": "./index.html",
+    "action": "/jargon-translator/index.html",
     "method": "GET",
     "params": {
       "title": "title",
       "text": "text",
-      "url": "text"
+      "url": "url"
     }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+easyenglish",
+      "url": "/jargon-translator/index.html?query=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
   }
 }
