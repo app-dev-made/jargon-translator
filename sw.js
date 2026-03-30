@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jargon-lens-v12';
+const CACHE_NAME = 'easyenglish-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -33,7 +33,21 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Added for Google Play PWA Requirements
+self.addEventListener('periodicsync', (event) => {
+  console.log('[SW] Periodic Sync active');
+});
+
 self.addEventListener('sync', (event) => {
-  console.log('[SW] Background Syncing...', event.tag);
+  console.log('[SW] Background Sync active');
+});
+
+self.addEventListener('push', (event) => {
+  const options = {
+    body: event.data ? event.data.text() : 'EasyEnglish is ready!',
+    icon: 'icons/icon-192x192.png',
+    badge: 'icons/icon-72x72.png'
+  };
+  event.waitUntil(
+    self.registration.showNotification('EasyEnglish', options)
+  );
 });
