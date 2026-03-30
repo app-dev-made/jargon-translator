@@ -1,15 +1,12 @@
-const CACHE_NAME = 'easyenglish-ultimate-v1';
+const CACHE_NAME = 'ee-v2-enterprise';
 const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/icon-72x72.png',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
-  './icons/apple-touch-icon.png'
+  'index.html',
+  'manifest.json',
+  'icons/icon-192x192.png',
+  'icons/icon-512x512.png'
 ];
 
-// Installation & Caching
+// Install: Cache core assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
@@ -17,49 +14,37 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activation & Cleanup
+// Activate: Cleanup old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
+    caches.keys().then((keys) => Promise.all(
+      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+    ))
+  );
+});
+
+// Fetch: Smart Strategy
+self.addEventListener('fetch', (event) => {
+  // Ignore API calls to Gemini - always go to network
+  if (event.request.url.includes('googleapis.com')) {
+    return fetch(event.request);
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).then((fetchRes) => {
+        return caches.open(CACHE_NAME).then((cache) => {
+          // Only cache our own assets
+          if (event.request.url.startsWith(self.location.origin)) {
+            cache.put(event.request, fetchRes.clone());
+          }
+          return fetchRes;
+        });
+      });
+    }).catch(() => {
+      if (event.request.mode === 'navigate') {
+        return caches.match('index.html');
+      }
     })
   );
-  self.clients.claim();
-});
-
-// Fetching strategy (Network first, fallback to cache)
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
-});
-
-// ── ADVANCED STORE REQUIREMENTS ──
-
-// Clears: "Periodic Background Sync"
-self.addEventListener('periodicsync', (event) => {
-  console.log('[EasyEnglish] Periodic sync active');
-});
-
-// Clears: "Background Fetch"
-self.addEventListener('backgroundfetchsuccess', (event) => {
-  console.log('[EasyEnglish] Background fetch successful');
-});
-
-// Clears: "Background Sync" (Standard)
-self.addEventListener('sync', (event) => {
-  console.log('[EasyEnglish] Background sync triggered:', event.tag);
-});
-
-// Clears: "Re-engage users with notifications"
-self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'EasyEnglish update available!',
-    icon: 'icons/icon-192x192.png',
-    badge: 'icons/icon-72x72.png',
-    vibrate: [100, 50, 100]
-  };
-  event.waitUntil(self.registration.showNotification('EasyEnglish', options));
 });
