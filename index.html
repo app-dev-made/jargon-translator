@@ -1773,12 +1773,27 @@ if ('launchQueue' in window) {
     }
   });
 }
-
 // ── STARTUP LOG ──
 EE_CORE.info('APP', `EasyEnglish v3.0.0 started`, {
   ua: navigator.userAgent.slice(0,80),
   online: navigator.onLine,
   sw: 'serviceWorker' in navigator
+});
+  // ── HANDLE SHORTCUT ACTIONS ──
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const action = urlParams.get('action');
+  
+  if (action === 'scan') {
+    // Wait a brief moment for the app to load, then trigger camera
+    setTimeout(() => {
+      if (typeof triggerCamera === 'function') triggerCamera();
+    }, 500);
+  } else if (action === 'paste') {
+    setTimeout(() => {
+      if (typeof openPasteModal === 'function') openPasteModal();
+    }, 500);
+  }
 });
 </script>
 </body>
