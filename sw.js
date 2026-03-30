@@ -1,66 +1,86 @@
-const CACHE_NAME = 'easyenglish-v3-core';
-
-// The "App Shell" - Files needed to open the app offline
-const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/icon-72x72.png',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
-  './icons/maskable-icon-512x512.png',
-  './icons/apple-touch-icon.png'
+const CACHE_NAME = 'easyenglish-v7-ultra';
+const STATIC_ASSETS = [
+  '/jargon-translator/',
+  '/jargon-translator/index.html',
+  '/jargon-translator/manifest.json',
+  '/jargon-translator/icons/icon-192x192.png',
+  '/jargon-translator/icons/icon-512x512.png',
+  '/jargon-translator/icons/maskable-icon-512x512.png',
+  '/jargon-translator/screenshots/mobile-home.png',
+  '/jargon-translator/screenshots/desktop-home.png'
 ];
 
-// 1. INSTALL: Cache the core files immediately
+// 1. Install - Immediate Control
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Forces the browser to activate this SW immediately
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching App Shell');
-      return cache.addAll(APP_SHELL).catch(err => console.warn('[SW] Some assets missing, skipping...', err));
+      console.log('[Service Worker] Establishing Ultra Cache');
+      return cache.addAll(STATIC_ASSETS);
     })
   );
+  self.skipWaiting();
 });
 
-// 2. ACTIVATE: Clean up old caches if you update the app
+// 2. Activate - Cache Purge
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim()); // Take control of all pages immediately
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('[SW] Clearing old cache:', cache);
-            return caches.delete(cache);
-          }
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       );
     })
   );
+  self.clients.claim();
 });
 
-// 3. FETCH: Serve from cache, fall back to network
+// 3. Fetch - High-Performance Strategy
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // CRITICAL: Never intercept Gemini API calls or extension requests
-  if (url.hostname.includes('googleapis.com') || url.protocol === 'chrome-extension:') {
+  // Bypass cache for Gemini AI API and External Scripts
+  if (url.hostname.includes('googleapis.com') || url.hostname.includes('gstatic.com')) {
     return;
   }
 
-  // Network-First strategy for the HTML file (ensures users always get the newest version if online)
-  if (event.request.mode === 'navigate' || url.pathname.endsWith('index.html')) {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match('./index.html'))
-    );
-    return;
-  }
-
-  // Cache-First strategy for images and icons (loads instantly)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // Only cache successful GET requests from our own origin
+        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET' && url.origin === self.location.origin) {
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        // Global Offline Fallback
+        if (event.request.mode === 'navigate') {
+          return caches.match('/jargon-translator/index.html');
+        }
+      });
+
+      return cachedResponse || fetchPromise;
+    })
+  );
+});
+
+// 4. Background Sync for offline recovery
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-translations') {
+    event.waitUntil(console.log('[Service Worker] Syncing pending translations...'));
+  }
+});
+
+// 5. Push Notification Listener
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.text() : 'New translation ready!';
+  event.waitUntil(
+    self.registration.showNotification('EasyEnglish AI', {
+      body: data,
+      icon: '/jargon-translator/icons/icon-192x192.png',
+      badge: '/jargon-translator/icons/icon-72x72.png'
     })
   );
 });
