@@ -37,7 +37,7 @@
   "screenshots": [
     {
       "src": "screenshots/mobile-home.png",
-      "sizes": "1080x1920",
+      "sizes": "426x925",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Instant jargon decoding on your phone"
