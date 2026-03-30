@@ -1,10 +1,12 @@
 {
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
+  "description": "Translate legal and business jargon into plain English instantly.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -17,6 +19,18 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan Document",
+      "url": "index.html?action=scan",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Paste Text",
+      "url": "index.html?action=paste",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ]
 }
