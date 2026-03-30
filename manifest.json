@@ -1,18 +1,19 @@
 {
-  "id": "jargon-lens-v10",
-  "version": "1.0.1",
+  "id": "com.jargonlens.app.v1",
+  "version": "1.0.0",
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
   "lang": "en-US",
+  "dir": "ltr",
   "description": "Instantly translate confusing legal and business jargon into plain English. Spot red flags in contracts and understand your rights.",
-  "start_url": "./index.html?v=10",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
   "orientation": "portrait",
   "categories": ["productivity", "utilities", "education"],
-  "iarc_rating_id": "e58c1f10-1234-5678-90ab-cdef12345678",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -25,6 +26,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -33,14 +40,16 @@
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Jargon Lens Mobile"
+      "label": "Jargon Lens Mobile View"
     },
     {
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Jargon Lens Desktop"
+      "label": "Jargon Lens Desktop View"
     }
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
