@@ -14,6 +14,16 @@
   "lang": "en-US",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
+    }
+  ],
+  "iarc_rating_id": "e84d416b-67a4-4366-a32b-6799071c77f0",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "icons": [
     {
       "src": "icons/icon-192x192.png",
