@@ -1,18 +1,74 @@
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "start_url": "index.html",
+  "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
+  "id": "/index.html",
+  "start_url": "./index.html",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
   "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities", "business", "education"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
-    { "src": "icons/icon-192x192.png", "type": "image/png", "sizes": "192x192" },
-    { "src": "icons/icon-512x512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/mobile-home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Instant jargon decoding on your phone"
+    },
+    {
+      "src": "screenshots/desktop-home.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Analyze complex contracts on your computer"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan Document",
+      "short_name": "Scan",
+      "description": "Open camera to scan physical papers",
+      "url": "/index.html?action=scan",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Paste Text",
+      "short_name": "Paste",
+      "description": "Instantly paste text for analysis",
+      "url": "/index.html?action=paste",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    }
   ],
   "file_handlers": [
     {
-      "action": "index.html",
+      "action": "./index.html",
       "accept": {
         "image/*": [".jpg", ".jpeg", ".png"],
         "application/pdf": [".pdf"]
@@ -20,7 +76,7 @@
     }
   ],
   "share_target": {
-    "action": "index.html",
+    "action": "/index.html",
     "method": "GET",
     "params": {
       "title": "title",
