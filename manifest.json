@@ -42,7 +42,7 @@
   "screenshots": [
     {
       "src": "/jargon-translator/screenshots/mobile-home.png",
-      "sizes": "1080x1920",
+      "sizes": "1290x2796",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Deep Jargon Analysis on Mobile"
