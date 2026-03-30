@@ -14,31 +14,21 @@
   "lang": "en-US",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
-    }
-  ],
-  "iarc_rating_id": "e84d416b-67a4-4366-a32b-6799071c77f0",
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
   "icons": [
     {
-      "src": "icons/icon-192x192.png",
+      "src": "./icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "./icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/maskable-icon-512x512.png",
+      "src": "./icons/maskable-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -46,14 +36,14 @@
   ],
   "screenshots": [
     {
-      "src": "screenshots/mobile-home.png",
-      "sizes": "426x925",
+      "src": "./screenshots/mobile-home.png",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Instant jargon decoding on your phone"
     },
     {
-      "src": "screenshots/desktop-home.png",
+      "src": "./screenshots/desktop-home.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
@@ -66,14 +56,28 @@
       "short_name": "Scan",
       "description": "Open camera to scan physical papers",
       "url": "/jargon-translator/index.html?action=scan",
-      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "./icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
     },
     {
       "name": "Paste Text",
       "short_name": "Paste",
       "description": "Instantly paste text for analysis",
       "url": "/jargon-translator/index.html?action=paste",
-      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "./icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
     }
   ],
   "file_handlers": [
