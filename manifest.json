@@ -2,12 +2,14 @@
   "id": "com.jargontranslator.app",
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
-  "description": "Translate legal and business jargon into plain English instantly.",
+  "description": "Instantly translate confusing legal and business jargon into plain English. Spot red flags in contracts and understand your rights.",
   "start_url": "./index.html",
   "display": "standalone",
+  "display_override": ["window-controls-overlay"],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
-  "categories": ["productivity", "utilities"],
+  "orientation": "portrait",
+  "categories": ["productivity", "utilities", "education"],
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -27,15 +29,15 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Jargon Lens Desktop"
+      "form_factor": "narrow",
+      "label": "Jargon Lens Mobile View"
     },
     {
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Jargon Lens Mobile"
+      "form_factor": "wide",
+      "label": "Jargon Lens Desktop View"
     }
   ]
 }
