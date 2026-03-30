@@ -8,13 +8,13 @@
   <meta name="description" content="Translate legal and business jargon into plain English instantly. Spot red flags, understand your rights, and know what documents really mean."/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="Jargon Lens"/>
+  <meta name="apple-mobile-web-app-title" content="EasyEnglish"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="application-name" content="Jargon Lens"/>
-  <meta property="og:title" content="Jargon Lens – Plain English Translator"/>
+  <meta name="application-name" content="EasyEnglish"/>
+  <meta property="og:title" content="EasyEnglish – Plain English Translator"/>
   <meta property="og:description" content="Decode legal and business jargon in seconds."/>
   <meta property="og:type" content="website"/>
-  <title>Jargon Lens – Plain English Translator</title>
+  <title>EasyEnglish – Plain English Translator</title>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png"/>
@@ -383,11 +383,10 @@
 </head>
 <body>
 
-<!-- ── APP HEADER ── -->
 <header class="app-header">
   <div class="app-title">
-    <img src="icons/icon-72x72.png" alt="Jargon Lens" class="logo-icon" onerror="this.style.display='none'"/>
-    <h1>Jargon Lens</h1>
+    <img src="icons/icon-72x72.png" alt="EasyEnglish" class="logo-icon" onerror="this.style.display='none'"/>
+    <h1>EasyEnglish</h1>
   </div>
   <div class="header-actions">
     <button class="icon-btn" onclick="showScreen('history')" title="History" aria-label="View history">📋</button>
@@ -395,7 +394,6 @@
   </div>
 </header>
 
-<!-- ── SCREEN 1: CAPTURE ── -->
 <section id="screen-capture" class="screen active" role="main" aria-label="Capture document">
   <div class="capture-hero fade-in">
     <h2>Decode Any<br/><span>Scary Document</span></h2>
@@ -408,7 +406,6 @@
     <button onclick="promptInstall()">Install</button>
   </div>
 
-  <!-- API Key setup (shown when no key saved) -->
   <div class="api-setup" id="api-setup" style="display:none;">
     <h3>🔑 Connect AI (Optional)</h3>
     <p>Add your free Google Gemini API key for real AI-powered translations. Without it, we'll show you a sample analysis.</p>
@@ -449,7 +446,6 @@
   <input type="file" id="file-input" accept="image/*,application/pdf,text/*"/>
 </section>
 
-<!-- ── SCREEN 2: PROCESSING ── -->
 <section id="screen-processing" class="screen" role="status" aria-label="Processing document" aria-live="polite">
   <div class="processing-anim">
     <div class="processing-ring ring1"></div>
@@ -467,18 +463,14 @@
   </div>
 </section>
 
-<!-- ── SCREEN 3: CLARITY DASHBOARD ── -->
 <section id="screen-result" class="screen" role="main" aria-label="Analysis results">
-  <!-- populated by JS -->
-</section>
+  </section>
 
-<!-- ── SCREEN 4: HISTORY ── -->
 <section id="screen-history" class="screen" role="main" aria-label="History">
   <h2 style="font-size:1.3rem;font-weight:800;">📋 Your History</h2>
   <div id="history-list"></div>
 </section>
 
-<!-- ── PASTE MODAL ── -->
 <div class="modal-overlay" id="paste-modal" role="dialog" aria-modal="true" aria-label="Paste text" onclick="closePasteModal(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -491,7 +483,6 @@
   </div>
 </div>
 
-<!-- ── DRAFT EMAIL MODAL ── -->
 <div class="draft-modal" id="draft-modal" role="dialog" aria-modal="true" aria-label="Draft email">
   <div class="draft-card">
     <h3>✉️ Your Follow-Up Question</h3>
@@ -504,7 +495,6 @@
   </div>
 </div>
 
-<!-- ── SETTINGS PANEL ── -->
 <div id="settings-panel" role="dialog" aria-modal="true" aria-label="Settings" onclick="closeSettings(event)">
   <div class="settings-sheet">
     <div class="modal-handle"></div>
@@ -532,10 +522,8 @@
   </div>
 </div>
 
-<!-- ── TOAST ── -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- ── BOTTOM NAV ── -->
 <nav class="bottom-nav" aria-label="Main navigation">
   <button class="nav-btn active" id="nav-scan" onclick="navTo('capture','nav-scan')" aria-label="Scan">
     <span class="nav-icon">🔍</span><span class="nav-label">Scan</span>
@@ -556,11 +544,11 @@ let deferredInstallPrompt = null;
 // ── SERVICE WORKER ──
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(reg => {
-    console.log('[JL] SW registered:', reg.scope);
+    console.log('[EE] SW registered:', reg.scope);
     reg.addEventListener('updatefound', () => {
       showToast('🆕 App updated! Refresh for the latest version.');
     });
-  }).catch(err => console.error('[JL] SW error:', err));
+  }).catch(err => console.error('[EE] SW error:', err));
 }
 
 // ── INSTALL PROMPT ──
@@ -571,7 +559,7 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 window.addEventListener('appinstalled', () => {
   document.getElementById('install-banner').classList.remove('show');
-  showToast('🎉 Jargon Lens installed!');
+  showToast('🎉 EasyEnglish installed!');
 });
 function promptInstall() {
   if (deferredInstallPrompt) {
@@ -934,10 +922,10 @@ function copyDraft() {
 
 // ── SHARE ──
 async function shareResult() {
-  const text = currentAnalysis ? `${currentAnalysis.headline}\n\n${currentAnalysis.bottomLine}` : 'Check out Jargon Lens!';
+  const text = currentAnalysis ? `${currentAnalysis.headline}\n\n${currentAnalysis.bottomLine}` : 'Check out EasyEnglish!';
   if (navigator.share) {
     try {
-      await navigator.share({ title: 'Jargon Lens Analysis', text, url: location.href });
+      await navigator.share({ title: 'EasyEnglish Analysis', text, url: location.href });
     } catch(e) { /* cancelled */ }
   } else {
     navigator.clipboard?.writeText(text).then(() => showToast('📋 Analysis copied!'));
