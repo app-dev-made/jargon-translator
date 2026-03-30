@@ -2,10 +2,10 @@
   "id": "com.jargontranslator.app",
   "name": "Jargon Lens",
   "short_name": "Jargon Lens",
+  "lang": "en-US",
   "description": "Instantly translate confusing legal and business jargon into plain English. Spot red flags in contracts and understand your rights.",
   "start_url": "./index.html",
   "display": "standalone",
-  "display_override": ["window-controls-overlay"],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
   "orientation": "portrait",
@@ -21,7 +21,7 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
