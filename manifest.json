@@ -1,75 +1,31 @@
 {
-  "id": "com.easyenglish.app.v1",
-  "version": "1.0.1",
-  "name": "EasyEnglish",
+  "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "lang": "en-US",
-  "dir": "ltr",
-  "description": "Instantly translate confusing legal and business jargon into plain English. Spot red flags in contracts and understand your rights.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "index.html",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "tabbed", "standalone"],
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
-  "orientation": "portrait",
-  "categories": ["productivity", "utilities", "education"],
+  "orientation": "portrait-primary",
   "icons": [
+    { "src": "icons/icon-192x192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icons/icon-512x512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ],
+  "file_handlers": [
     {
-      "src": "icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "action": "index.html",
+      "accept": {
+        "image/*": [".jpg", ".jpeg", ".png"],
+        "application/pdf": [".pdf"]
+      }
     }
   ],
-  "screenshots": [
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "EasyEnglish Mobile View"
-    },
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "EasyEnglish Desktop View"
+  "share_target": {
+    "action": "index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "Start Translating",
-      "short_name": "Translate",
-      "url": "./index.html",
-      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
-    }
-  ],
-  "edge_side_panel": {
-    "preferred_width": 480
-  },
-  "launch_handler": {
-    "client_mode": ["focus-existing", "auto"]
-  },
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.easyenglish.app",
-      "id": "com.easyenglish.app"
-    }
-  ],
-  "prefer_related_applications": false
+  }
 }
