@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jargon-lens-v8';
+const CACHE_NAME = 'jargon-lens-final-v10';
 const ASSETS = [
   './',
   './index.html',
@@ -9,34 +9,28 @@ const ASSETS = [
   './icons/apple-touch-icon.png'
 ];
 
-// Install Event: Caches all essential files
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching app assets');
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
+  self.skipWaiting(); // Forces the new service worker to take over immediately
 });
 
-// Activate Event: Deletes old caches to keep the app updated
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
+        })
       );
     })
   );
   self.clients.claim();
 });
 
-// Fetch Event: Allows the app to work offline
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
+    caches.match(event.request).then((res) => res || fetch(event.request))
   );
 });
