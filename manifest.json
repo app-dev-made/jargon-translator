@@ -2,9 +2,9 @@
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "/index.html",
-  "start_url": "./index.html",
-  "scope": "/",
+  "id": "/jargon-translator/",
+  "start_url": "/jargon-translator/index.html",
+  "scope": "/jargon-translator/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#1a1a2e",
@@ -55,20 +55,20 @@
       "name": "Scan Document",
       "short_name": "Scan",
       "description": "Open camera to scan physical papers",
-      "url": "/index.html?action=scan",
+      "url": "/jargon-translator/index.html?action=scan",
       "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Paste Text",
       "short_name": "Paste",
       "description": "Instantly paste text for analysis",
-      "url": "/index.html?action=paste",
+      "url": "/jargon-translator/index.html?action=paste",
       "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ],
   "file_handlers": [
     {
-      "action": "./index.html",
+      "action": "/jargon-translator/index.html",
       "accept": {
         "image/*": [".jpg", ".jpeg", ".png"],
         "application/pdf": [".pdf"]
@@ -76,7 +76,7 @@
     }
   ],
   "share_target": {
-    "action": "/index.html",
+    "action": "/jargon-translator/index.html",
     "method": "GET",
     "params": {
       "title": "title",
