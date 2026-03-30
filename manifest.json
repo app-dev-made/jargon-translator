@@ -1,11 +1,11 @@
 {
   "id": "com.easyenglish.app.v1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "EasyEnglish",
   "short_name": "EasyEnglish",
   "lang": "en-US",
   "dir": "ltr",
-  "description": "Instantly translate confusing legal and business jargon into Easy English. Spot red flags in contracts and understand your rights.",
+  "description": "Instantly translate confusing legal and business jargon into plain English. Spot red flags in contracts and understand your rights.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -14,7 +14,6 @@
   "theme_color": "#6c63ff",
   "orientation": "portrait",
   "categories": ["productivity", "utilities", "education"],
-  "iarc_rating_id": "e58c1f10-1234-5678-90ab-cdef12345678",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -27,6 +26,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -49,32 +54,16 @@
     {
       "name": "Start Translating",
       "short_name": "Translate",
-      "description": "Open EasyEnglish immediately",
       "url": "./index.html",
       "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ],
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
   "launch_handler": {
     "client_mode": ["focus-existing", "auto"]
   },
-  "share_target": {
-    "action": "./index.html",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "note_taking": {
-    "new_note_url": "./index.html"
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+easyenglish",
-      "url": "./index.html?query=%s"
-    }
-  ],
   "related_applications": [
     {
       "platform": "play",
@@ -82,8 +71,5 @@
       "id": "com.easyenglish.app"
     }
   ],
-  "prefer_related_applications": false,
-  "edge_side_panel": {
-    "preferred_width": 400
-  }
+  "prefer_related_applications": false
 }
