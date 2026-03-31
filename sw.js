@@ -36,39 +36,38 @@ self.addEventListener('activate', (event) => {
 });
 
 // 3. Fetch - High-Performance Strategy
+// --- ENHANCED FETCH STRATEGY ---
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
-  // Bypass cache for Gemini AI API and External Scripts
-  if (url.hostname.includes('googleapis.com') || url.hostname.includes('gstatic.com')) {
-    return;
-  }
+  // We only want to handle standard GET requests
+  if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        // Only cache successful GET requests from our own origin
-        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET' && url.origin === self.location.origin) {
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, networkResponse.clone());
-          });
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+
+      try {
+        // 1. Try to get a fresh version from the network
+        const networkResponse = await fetch(event.request);
+        
+        // 2. If it's a successful response, save a copy in the cache for next time
+        if (networkResponse.status === 200) {
+          cache.put(event.request, networkResponse.clone());
         }
+        
         return networkResponse;
-      }).catch(() => {
-        // Global Offline Fallback
+      } catch (error) {
+        // 3. NETWORK FAILED: Try to serve from cache
+        const cachedResponse = await cache.match(event.request);
+        if (cachedResponse) return cachedResponse;
+
+        // 4. OFFLINE FALLBACK: If both fail and user is navigating, show the app
         if (event.request.mode === 'navigate') {
-          return caches.match('/jargon-translator/index.html');
+          const fallback = await cache.match('/jargon-translator/index.html');
+          return fallback;
         }
-      });
-      return cachedResponse || fetchPromise;
-    })
+      }
+    })()
   );
-});
-// Basic Offline Fallback Trigger
-self.addEventListener('fetch', (event) => {
-  if (!navigator.onLine) {
-    event.respondWith(caches.match(event.request).then((res) => res || caches.match('/jargon-translator/index.html')));
-  }
 });
 // 4. Background Sync for offline recovery
 self.addEventListener('sync', (event) => {
