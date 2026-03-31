@@ -949,14 +949,20 @@ function promptInstall() {
 // ── NAVIGATION ──
 // ═══════════════════════════════════════════════════════════
 function showScreen(name) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    // Hide all and reset their internal scroll
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        s.scrollTop = 0; 
+    });
+
     const el = document.getElementById('screen-' + name);
-    if (el) { 
-        el.classList.add('active'); 
-        el.classList.add('fade-in'); 
-        
-        // THE FIX: Reset scroll to top every time a tab is clicked
+    if (el) {
+        el.classList.add('active');
+        el.classList.add('fade-in');
+
+        // Scroll the window AND the element to the top
         window.scrollTo(0, 0);
+        setTimeout(() => { el.scrollTop = 0; }, 10); 
     }
 }
 function navTo(screen, navId) {
