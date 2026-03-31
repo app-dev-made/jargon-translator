@@ -60,19 +60,22 @@ self.addEventListener('fetch', (event) => {
           return caches.match('/jargon-translator/index.html');
         }
       });
-
       return cachedResponse || fetchPromise;
     })
   );
 });
-
+// Basic Offline Fallback Trigger
+self.addEventListener('fetch', (event) => {
+  if (!navigator.onLine) {
+    event.respondWith(caches.match(event.request).then((res) => res || caches.match('/jargon-translator/index.html')));
+  }
+});
 // 4. Background Sync for offline recovery
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-translations') {
     event.waitUntil(console.log('[Service Worker] Syncing pending translations...'));
   }
 });
-
 // 5. Push Notification Listener
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.text() : 'New translation ready!';
