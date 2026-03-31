@@ -79,8 +79,19 @@
     }
     .icon-btn:hover { background: var(--primary); border-color: var(--primary); color:#fff; transform:scale(1.05); }
     /* ── SCREENS ── */
-    .screen { display:none; flex-direction:column; min-height:calc(100vh - 70px); padding: 20px; }
-    .screen.active { display:flex; }
+   /* --- SCREENS --- */
+.screen { 
+    display: none; 
+    flex-direction: column; 
+    min-height: calc(100vh - 70px); 
+    padding: 20px; 
+    padding-bottom: 100px; /* The safety zone for the nav bar */
+    overflow-y: auto;
+}
+
+.screen.active { 
+    display: flex; 
+}
     /* ── SCREEN 1: CAPTURE ── */
     #screen-capture { align-items:center; justify-content:center; gap: 20px; }
     .capture-hero { text-align:center; margin-bottom:4px; }
@@ -542,8 +553,18 @@
 </section>
 
 <!-- ── SCREEN 3: CLARITY DASHBOARD ── -->
-<section id="screen-result" class="screen" role="main" aria-label="Analysis results"></section>
-
+<section id="screen-result" class="screen" role="main" aria-label="Analysis results">
+    <div id="empty-results-message" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.6;">🔍</div>
+        <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem;">No Results Yet</h2>
+        <p style="max-width: 250px; line-height: 1.5;">Start an analysis or upload a document to see your plain English results here.</p>
+        <button onclick="document.querySelector('[data-screen=\'scan\']').click()" 
+                style="margin-top: 1.5rem; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
+            Start Analysis
+        </button>
+    </div>
+    <div id="results-content" style="display: none;"></div>
+</section>
 <!-- ── SCREEN 4: HISTORY ── -->
 <section id="screen-history" class="screen" role="main" aria-label="History">
   <div class="history-header">
