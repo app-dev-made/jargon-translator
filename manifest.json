@@ -12,6 +12,9 @@
       "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
     }
   ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
