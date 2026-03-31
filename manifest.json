@@ -5,6 +5,13 @@
   "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
   "scope": "/jargon-translator/",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
+    }
+  ],
   "display": "standalone",
   "display_override": [
     "window-controls-overlay",
