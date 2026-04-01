@@ -1,6 +1,7 @@
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
+  "version": "1.0.1",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
   "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
