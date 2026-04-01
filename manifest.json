@@ -1,10 +1,10 @@
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "/jargon-translator/",
-  "start_url": "https://app-dev-made.github.io/jargon-translator/",
+  "id": "jargon-translator",
+  "start_url": "index.html",
   "scope": "/jargon-translator/",
   "display": "standalone",
   "background_color": "#1a1a2e",
