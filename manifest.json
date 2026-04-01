@@ -4,7 +4,7 @@
   "version": "1.0.3",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
   "id": "jargon-translator",
-  "start_url": "index.html",
+  "start_url": "/jargon-translator/index.html",
   "scope": "/jargon-translator/",
   "display": "standalone",
   "background_color": "#1a1a2e",
