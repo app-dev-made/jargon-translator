@@ -5,6 +5,13 @@
   "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
   "scope": "/jargon-translator/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#6c63ff",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities", "business", "education", "legal"],
+  "lang": "en-US",
+  "dir": "ltr",
   "prefer_related_applications": false,
   "related_applications": [
     {
@@ -15,20 +22,12 @@
   "launch_handler": {
     "client_mode": "focus-existing"
   },
-  "display": "standalone",
   "display_override": [
     "window-controls-overlay",
     "tabbed",
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#1a1a2e",
-  "theme_color": "#6c63ff",
-  "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities", "business", "education", "legal"],
-  "lang": "en-US",
-  "dir": "ltr",
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/jargon-translator/icons/icon-192x192.png",
@@ -115,9 +114,5 @@
   ],
   "edge_side_panel": {
     "preferred_width": 480
-  },
-  "launch_handler": {
-      "client_mode": ["focus-existing", "auto"]
-    },
-    "iarc_rating_id": "00000000-0000-0000-0000-000000000000"
+  }
 }
