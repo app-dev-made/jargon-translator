@@ -17,6 +17,9 @@
   <meta property="og:description" content="Decode legal and business jargon in seconds."/>
   <meta property="og:type" content="website"/>
   <title>EasyEnglish – Plain English Translator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png"/>
@@ -42,6 +45,34 @@
         --text: #1a1a2e; --text-muted: #555577;
         --border: rgba(108,99,255,0.2);
         --shadow: 0 8px 32px rgba(108,99,255,0.15);
+        /* 1. Remove the "Web" feel and add smooth scrolling */
+* {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+body {
+    overscroll-behavior-y: contain; 
+}
+
+/* 2. Tactile Button Animation */
+button {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+}
+
+button:active {
+    transform: scale(0.95); /* This makes the button "press down" like a real app */
+}
+
+/* 3. Glassmorphism Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(26, 26, 46, 0.8); /* This matches your --bg variable */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
       }
     }
     html { height: 100%; }
@@ -1838,6 +1869,28 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 });
+<script>
+  // 1. The Haptic Function (The physical "click" feel)
+  function triggerHaptic() {
+    if ("vibrate" in navigator) {
+        navigator.vibrate(10); // A tiny, professional 10ms pulse
+    }
+  }
+            
+  // 2. Automatically add the feel to EVERY button in your app
+  // This way, you don't need to know the ID names
+  document.addEventListener('click', function (e) {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        triggerHaptic();
+    }
+  });
+
+  // 3. Optional: Add it to the Input Area
+  // If you want a tiny buzz when they start typing (very premium feel)
+  const jargonInput = document.querySelector('textarea') || document.querySelector('input');
+  if (jargonInput) {
+    jargonInput.addEventListener('focus', () => triggerHaptic());
+  }
 </script>
 </body>
 </html>
