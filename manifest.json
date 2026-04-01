@@ -4,13 +4,19 @@
   "version": "1.0.1",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
   "id": "/jargon-translator/",
-  "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
+  "start_url": "https://app-dev-made.github.io/jargon-translator/",
   "scope": "/jargon-translator/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#6c63ff",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities", "business", "education", "legal"],
+  "categories": [
+    "productivity",
+    "utilities",
+    "business",
+    "education",
+    "legal"
+  ],
   "lang": "en-US",
   "dir": "ltr",
   "iarc_rating_id": "e84d416b-67a4-4366-a32b-6799071c77f0",
@@ -72,30 +78,57 @@
       "short_name": "Scan",
       "description": "Scan physical documents using AI Vision",
       "url": "/jargon-translator/index.html?action=scan",
-      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "/jargon-translator/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Paste Jargon",
       "short_name": "Paste",
       "description": "Instantly translate clipboard text",
       "url": "/jargon-translator/index.html?action=paste",
-      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "/jargon-translator/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "View History",
       "short_name": "History",
       "description": "Access your previous translations",
       "url": "/jargon-translator/index.html?action=history",
-      "icons": [{ "src": "/jargon-translator/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "/jargon-translator/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "file_handlers": [
     {
       "action": "/jargon-translator/index.html",
       "accept": {
-        "image/*": [".jpg", ".jpeg", ".png", ".webp"],
-        "application/pdf": [".pdf"],
-        "text/plain": [".txt"]
+        "image/*": [
+          ".jpg",
+          ".jpeg",
+          ".png",
+          ".webp"
+        ],
+        "application/pdf": [
+          ".pdf"
+        ],
+        "text/plain": [
+          ".txt"
+        ]
       }
     }
   ],
