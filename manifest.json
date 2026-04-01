@@ -1,9 +1,9 @@
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "/jargon-translator/"
+  "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html",
   "scope": "/jargon-translator/",
   "display": "standalone",
@@ -117,18 +117,9 @@
     {
       "action": "/jargon-translator/index.html",
       "accept": {
-        "image/*": [
-          ".jpg",
-          ".jpeg",
-          ".png",
-          ".webp"
-        ],
-        "application/pdf": [
-          ".pdf"
-        ],
-        "text/plain": [
-          ".txt"
-        ]
+        "image/*": [".jpg", ".jpeg", ".png", ".webp"],
+        "application/pdf": [".pdf"],
+        "text/plain": [".txt"]
       }
     }
   ],
