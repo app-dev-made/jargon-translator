@@ -77,8 +77,15 @@
     }
     .icon-btn:hover { background: var(--primary); border-color: var(--primary); color:#fff; transform:scale(1.05); }
     /* ── SCREENS ── */
-    .screen { display:none; flex-direction:column; min-height:calc(100vh - 70px); padding: 20px; }
-    .screen.active { display:flex; }
+    .screen {
+      display: none;
+      padding: 80px 20px 120px; /* 80px top (for header), 120px bottom (for tabs) */
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .screen.active { 
+      display: block; 
+    }
     /* ── SCREEN 1: CAPTURE ── */
     #screen-capture { align-items:center; justify-content:center; gap: 20px; }
     .capture-hero { text-align:center; margin-bottom:4px; }
@@ -128,7 +135,7 @@
       display:none; align-items:flex-end; justify-content:center;
       z-index:200; backdrop-filter:blur(4px);
     }
-    .modal-overlay.open { display:flex; }
+    .modal-overlay.active { display:flex; }
     .modal-sheet {
       background:var(--bg2); width:100%; max-width:600px;
       border-radius:28px 28px 0 0; padding:28px 20px 40px;
@@ -585,7 +592,7 @@
     <h2 class="modal-title">📋 Paste Your Text</h2>
     <textarea class="paste-textarea" id="paste-text"
       placeholder="Paste the confusing text here… lease agreements, work emails, terms of service, anything that made you go 'huh?'"
-      oninput="updateWordCount(this)"></textarea>
+      oninput="updateWordCount(this); haptic.tap();"></textarea>
     <div class="word-count" id="word-count">0 words</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closePasteModal()">Cancel</button>
