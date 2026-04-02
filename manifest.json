@@ -1,15 +1,21 @@
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "/jargon-translator/",
+  "id": "com.easyenglish.translator.v1",
   "start_url": "/jargon-translator/index.html",
   "scope": "/jargon-translator/",
   "display": "standalone",
-  "background_color": "#1a1a2e",
-  "theme_color": "#6c63ff",
-  "orientation": "portrait-primary",
+  "display_override": [
+    "window-controls-overlay",
+    "tabbed",
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
   "categories": [
     "productivity",
     "utilities",
@@ -21,22 +27,38 @@
   "dir": "ltr",
   "iarc_rating_id": "e84d416b-67a4-4366-a32b-6799071c77f0",
   "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
-    }
-  ],
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
-  "display_override": [
-    "window-controls-overlay",
-    "tabbed",
-    "standalone",
-    "minimal-ui"
-  ],
+  "related_applications": [],
   "icons": [
+    {
+      "src": "/jargon-translator/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/jargon-translator/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/jargon-translator/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/jargon-translator/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/jargon-translator/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/jargon-translator/icons/icon-192x192.png",
       "sizes": "192x192",
@@ -44,16 +66,22 @@
       "purpose": "any"
     },
     {
-      "src": "/jargon-translator/icons/icon-512x512.png",
-      "sizes": "512x512",
+      "src": "/jargon-translator/icons/icon-384x384.png",
+      "sizes": "384x384",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/jargon-translator/icons/maskable-icon-512x512.png",
+      "src": "/jargon-translator/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/jargon-translator/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -65,19 +93,33 @@
       "label": "Deep Jargon Analysis on Mobile"
     },
     {
+      "src": "/jargon-translator/screenshots/mobile-dark.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dark Mode Interface for Night Reading"
+    },
+    {
       "src": "/jargon-translator/screenshots/desktop-home.png",
-      "sizes": "1920x860",
+      "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Enterprise Contract Review on Desktop"
+    },
+    {
+      "src": "/jargon-translator/screenshots/desktop-dark.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Deep Scan Results on Desktop Grid"
     }
   ],
   "shortcuts": [
     {
-      "name": "Scan Document",
-      "short_name": "Scan",
-      "description": "Scan physical documents using AI Vision",
-      "url": "/jargon-translator/index.html?action=scan",
+      "name": "New Translation",
+      "short_name": "Translate",
+      "description": "Open the decoder to paste new text",
+      "url": "/jargon-translator/index.html?action=new",
       "icons": [
         {
           "src": "/jargon-translator/icons/icon-192x192.png",
@@ -111,8 +153,31 @@
           "type": "image/png"
         }
       ]
+    },
+    {
+      "name": "App Settings",
+      "short_name": "Settings",
+      "description": "Manage haptics and auto-paste preferences",
+      "url": "/jargon-translator/index.html?action=settings",
+      "icons": [
+        {
+          "src": "/jargon-translator/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
+  "share_target": {
+    "action": "/jargon-translator/index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "file_handlers": [
     {
       "action": "/jargon-translator/index.html",
@@ -123,22 +188,17 @@
       }
     }
   ],
-  "share_target": {
-    "action": "/jargon-translator/index.html",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
   "protocol_handlers": [
     {
       "protocol": "web+easyenglish",
-      "url": "/jargon-translator/index.html?query=%s"
+      "url": "/jargon-translator/index.html?uri=%s"
     }
   ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "edge_side_panel": {
-    "preferred_width": 480
-  }
+    "preferred_width": 400
+  },
+  "handle_links": "auto"
 }
