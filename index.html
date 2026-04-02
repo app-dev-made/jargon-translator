@@ -1852,38 +1852,50 @@ window.addEventListener('DOMContentLoaded', () => {
   const action = urlParams.get('action');
   
   if (action === 'scan') {
-    // Wait a brief moment for the app to load, then trigger camera
-    setTimeout(() => {
-      if (typeof triggerCamera === 'function') triggerCamera();
-    }, 500);
-  } else if (action === 'paste') {
-    setTimeout(() => {
-      if (typeof openPasteModal === 'function') openPasteModal();
-    }, 500);
-  }
-});
 <script>
-        // 1. The Haptic Function (The physical "click" feel)
-        function triggerHaptic() {
-            try {
-                if (window.navigator && window.navigator.vibrate) {
-                    window.navigator.vibrate(10);
-                }
-            } catch (err) {
-                // If vibration fails, we do nothing so the app doesn't crash
-            }
+        // 1. Navigation Logic (Makes buttons switch screens)
+        function navTo(screenId, navBtnId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Show the selected screen
+            const targetScreen = document.getElementById('screen-' + screenId);
+            if (targetScreen) targetScreen.classList.add('active');
+            
+            // Update Navigation Bar UI
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(navBtnId);
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
-        // 2. Global Click Listener
+        // 2. The Haptic/Vibration Function
+        const haptic = {
+            tap: function() {
+                try {
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                    }
+                } catch (err) { /* Fail silently */ }
+            },
+            success: function() {
+                try {
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate([10, 30, 10]);
+                    }
+                } catch (err) { /* Fail silently */ }
+            }
+        };
+
+        // 3. Helper functions for Modals
+        function openSettings() { document.getElementById('settings-panel').classList.add('open'); }
+        function closeSettings() { document.getElementById('settings-panel').classList.remove('open'); }
+        function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
+        function closePasteModal() { document.getElementById('paste-modal').classList.remove('open'); }
+
+        // 4. Global Click Listener (Safety net)
         document.addEventListener('click', function (event) {
             const isButton = event.target.tagName === 'BUTTON' || event.target.closest('button');
-            if (isButton) {
-                triggerHaptic();
-            }
+            if (isButton) { haptic.tap(); }
         });
-
-        // 3. Your Translation Logic
-        // PASTE YOUR ORIGINAL AI TRANSLATION CODE HERE IF IT IS MISSING
     </script>
 </body>
 </html>
