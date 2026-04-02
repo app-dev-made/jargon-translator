@@ -672,12 +672,16 @@
 </nav>
 
 <script>
-// ── PWA AUTO-UPDATE ──
+// ── SAFE PWA AUTO-UPDATE ──
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // We check if showToast exists before calling it so it doesn't crash
     if (typeof showToast === 'function') {
-      showToast("Updating app to latest version...");
+      showToast("Updating app...");
       setTimeout(() => window.location.reload(), 1000);
+    } else {
+      // Fallback if the app isn't fully loaded yet
+      window.location.reload();
     }
   });
 }
