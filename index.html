@@ -1865,30 +1865,27 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 <script>
-  <script>
-  // 1. The Haptic Function (The physical "click" feel)
-  function triggerHaptic() {
-    try {
-        if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(10); 
+        // 1. The Haptic Function (The physical "click" feel)
+        function triggerHaptic() {
+            try {
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
+            } catch (err) {
+                // If vibration fails, we do nothing so the app doesn't crash
+            }
         }
-    } catch (err) {
-        // If vibration fails, we do nothing so the app doesn't crash
-    }
-  }
 
-  // 2. Global Click Listener 
-  // This looks for clicks on the WHOLE page and only vibrates if a button is hit
-  document.addEventListener('click', function (event) {
-    const isButton = event.target.tagName === 'BUTTON' || event.target.closest('button');
-    if (isButton) {
-        triggerHaptic();
-    }
-  });
+        // 2. Global Click Listener
+        document.addEventListener('click', function (event) {
+            const isButton = event.target.tagName === 'BUTTON' || event.target.closest('button');
+            if (isButton) {
+                triggerHaptic();
+            }
+        });
 
-  // 3. Keep your existing translation logic below this line
-  // If your AI-generated code had a function like "translateText()", 
-  // make sure it is still inside a <script> tag!
-</script>
+        // 3. Your Translation Logic
+        // PASTE YOUR ORIGINAL AI TRANSLATION CODE HERE IF IT IS MISSING
+    </script>
 </body>
 </html>
