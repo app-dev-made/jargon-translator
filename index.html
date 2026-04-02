@@ -1840,15 +1840,24 @@ document.addEventListener('keydown', e => {
   }
 });
 // ── GLOBAL ERROR BOUNDARY ──
-  window.onerror = function(message, source, lineno, colno, error) {
-    console.error("App Crash:", message);
-    const loader = document.getElementById('loading-overlay');
-    if (loader) loader.classList.remove('active');
-    const boundary = document.getElementById('error-boundary');
-    if (boundary) boundary.classList.add('show');
-    if (typeof haptic !== 'undefined') haptic.error();
-    return false;
-  };
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("App Crash caught:", message, "at line:", lineno);
+  
+  const loader = document.getElementById('loading-overlay');
+  if (loader) loader.classList.remove('active');
+
+  const boundary = document.getElementById('error-boundary');
+  if (boundary) {
+    boundary.classList.add('show');
+    const msgElem = document.getElementById('error-boundary-msg');
+    if (msgElem) {
+      msgElem.innerText = "The app ran into a hiccup. Let's try that again!";
+    }
+  }
+  
+  if (typeof haptic !== 'undefined') haptic.error();
+  return false;
+};
 </script>
 </body>
 </html>
