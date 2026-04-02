@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <title>EasyEnglish – Plain English Translator</title>
-    <meta name="description" content="Translate jargon into plain English instantly.">
-
-    <meta name="theme-color" content="#6c63ff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-
-    <style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#6c63ff" media="(prefers-color-scheme: light)"/>
+  <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)"/>
+  <meta name="description" content="Translate legal and business jargon into plain English instantly. Spot red flags, understand your rights, and know what documents really mean."/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="EasyEnglish"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="EasyEnglish"/>
+  <meta property="og:title" content="EasyEnglish – Plain English Translator"/>
+  <meta property="og:description" content="Decode legal and business jargon in seconds."/>
+  <meta property="og:type" content="website"/>
+  <title>EasyEnglish – Plain English Translator</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png"/>
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --primary: #6c63ff; --primary-dark: #4b44cc;
@@ -38,34 +40,6 @@
         --text: #1a1a2e; --text-muted: #555577;
         --border: rgba(108,99,255,0.2);
         --shadow: 0 8px 32px rgba(108,99,255,0.15);
-        /* 1. Remove the "Web" feel and add smooth scrolling */
-* {
-    -webkit-tap-highlight-color: transparent;
-    outline: none;
-}
-
-body {
-    overscroll-behavior-y: contain; 
-}
-
-/* 2. Tactile Button Animation */
-button {
-    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
-}
-
-button:active {
-    transform: scale(0.95); /* This makes the button "press down" like a real app */
-}
-
-/* 3. Glassmorphism Header */
-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-    background: rgba(26, 26, 46, 0.8); /* This matches your --bg variable */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
       }
     }
     html { height: 100%; }
@@ -103,19 +77,8 @@ header {
     }
     .icon-btn:hover { background: var(--primary); border-color: var(--primary); color:#fff; transform:scale(1.05); }
     /* ── SCREENS ── */
-   /* --- SCREENS --- */
-.screen { 
-    display: none; 
-    flex-direction: column; 
-    min-height: calc(100vh - 70px); 
-    padding: 20px; 
-    padding-bottom: 100px; /* The safety zone for the nav bar */
-    overflow-y: auto;
-}
-
-.screen.active { 
-    display: flex; 
-}
+    .screen { display:none; flex-direction:column; min-height:calc(100vh - 70px); padding: 20px; }
+    .screen.active { display:flex; }
     /* ── SCREEN 1: CAPTURE ── */
     #screen-capture { align-items:center; justify-content:center; gap: 20px; }
     .capture-hero { text-align:center; margin-bottom:4px; }
@@ -577,18 +540,8 @@ header {
 </section>
 
 <!-- ── SCREEN 3: CLARITY DASHBOARD ── -->
-<section id="screen-result" class="screen" role="main" aria-label="Analysis results">
-    <div id="empty-results-message" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; color: var(--text-muted);">
-        <div style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.6;">🔍</div>
-        <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem;">No Results Yet</h2>
-        <p style="max-width: 250px; line-height: 1.5;">Start an analysis or upload a document to see your plain English results here.</p>
-        <button onclick="document.querySelector('[data-screen=\'scan\']').click()" 
-                style="margin-top: 1.5rem; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
-            Start Analysis
-        </button>
-    </div>
-    <div id="results-content" style="display: none;"></div>
-</section>
+<section id="screen-result" class="screen" role="main" aria-label="Analysis results"></section>
+
 <!-- ── SCREEN 4: HISTORY ── -->
 <section id="screen-history" class="screen" role="main" aria-label="History">
   <div class="history-header">
@@ -664,14 +617,6 @@ header {
     <div class="settings-row">
       <div><div class="settings-label">Export Logs</div><div class="settings-sub">Download diagnostic log file</div></div>
       <button class="btn btn-ghost" onclick="EE_CORE.exportLogs()" style="padding:8px 14px;font-size:0.8rem;">Export</button>
-    </div>
-    <div class="settings-row" style="border-top: 1px solid #333; padding-top: 15px; margin-top: 10px;">
-    <p style="font-size: 0.75rem; color: #888; line-height: 1.3; margin: 0;">
-        <i class="fas fa-user-shield" style="margin-right: 5px;"></i>
-        <strong>Privacy Disclosure:</strong> Text submitted for translation is processed by Google Gemini. 
-        On our free version, this data may be used by the provider to improve AI services. 
-        <a href="/jargon-translator/privacy.html" style="color: #6c63ff; text-decoration: none;">View Full Privacy Policy</a>
-      </p>
     </div>
     <div class="settings-row" style="border-bottom:none;padding-top:8px;">
       <p style="font-size:0.72rem;color:var(--text-muted);line-height:1.6;text-align:center;width:100%;">
@@ -973,21 +918,9 @@ function promptInstall() {
 // ── NAVIGATION ──
 // ═══════════════════════════════════════════════════════════
 function showScreen(name) {
-    // Hide all and reset their internal scroll
-    document.querySelectorAll('.screen').forEach(s => {
-        s.classList.remove('active');
-        s.scrollTop = 0; 
-    });
-
-    const el = document.getElementById('screen-' + name);
-    if (el) {
-        el.classList.add('active');
-        el.classList.add('fade-in');
-
-        // Scroll the window AND the element to the top
-        window.scrollTo(0, 0);
-        setTimeout(() => { el.scrollTop = 0; }, 10); 
-    }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) { el.classList.add('active'); el.classList.add('fade-in'); }
 }
 function navTo(screen, navId) {
   showScreen(screen);
@@ -1840,67 +1773,13 @@ if ('launchQueue' in window) {
     }
   });
 }
+
 // ── STARTUP LOG ──
 EE_CORE.info('APP', `EasyEnglish v3.0.0 started`, {
   ua: navigator.userAgent.slice(0,80),
   online: navigator.onLine,
   sw: 'serviceWorker' in navigator
 });
-  // ── HANDLE SHORTCUT ACTIONS ──
-window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const action = urlParams.get('action');
-  
-  if (action === 'scan') {
-<script>
-        // 1. NAVIGATION LOGIC (Fixes Home, History, and Results buttons)
-        function navTo(screenId, navBtnId) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Show the target screen
-            const target = document.getElementById('screen-' + screenId);
-            if (target) target.classList.add('active');
-            
-            // Update the Bottom Nav Bar icons
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.getElementById(navBtnId);
-            if (activeBtn) activeBtn.classList.add('active');
-        }
-
-        // 2. INTERFACE LOGIC (Fixes Settings and Paste Modals)
-        function openSettings() { document.getElementById('settings-panel').style.display = 'flex'; }
-        function closeSettings(e) { if(!e || e.target.id === 'settings-panel') document.getElementById('settings-panel').style.display = 'none'; }
-        
-        function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
-        function closePasteModal(e) { if(!e || e.target.id === 'paste-modal') document.getElementById('paste-modal').classList.remove('open'); }
-
-        // 3. HAPTIC/VIBRATION ENGINE (Fixes the "haptic.tap" errors)
-        const haptic = {
-            tap: function() {
-                if (window.navigator && window.navigator.vibrate) {
-                    window.navigator.vibrate(10);
-                }
-            },
-            success: function() {
-                if (window.navigator && window.navigator.vibrate) {
-                    window.navigator.vibrate([10, 30, 10]);
-                }
-            }
-        };
-
-        // 4. TRANSLATION PLACEHOLDER
-        // Note: You will need to paste your original 'analyzeText' function here 
-        // for the "Decode It" button to actually translate text.
-        function analyzeText() {
-            haptic.success();
-            alert("Logic Restored! Please paste your AI Translation code here to process text.");
-        }
-
-        // 5. GLOBAL CLICK LISTENER
-        document.addEventListener('click', function (event) {
-            const isButton = event.target.tagName === 'BUTTON' || event.target.closest('button');
-            if (isButton) { haptic.tap(); }
-        });
-    </script>
+</script>
 </body>
 </html>
