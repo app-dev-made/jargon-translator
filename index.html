@@ -1751,111 +1751,49 @@ function renderLogViewer() {
   ).join('') || '<div class="log-entry">No logs yet.</div>';
 }
 
-// ═══════════════════════════════════════════════════════════
-// ── TOAST ──
-// ═══════════════════════════════════════════════════════════
-function showToast(msg, duration=3200) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), duration);
+// ── UTILS ──
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ═══════════════════════════════════════════════════════════
-// ── 3. HAPTIC ENGINE & ARIA-LIVE (A11Y) ──
-// Native vibration feedback + screen reader announcements
-// ═══════════════════════════════════════════════════════════
+// ── NAVIGATION & MODALS ──
+function navTo(screenId, navBtnId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + screenId);
+  if (target) target.classList.add('active');
+  
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById(navBtnId);
+  if (activeBtn) activeBtn.classList.add('active');
+  
+  closeSettings();
+  closePasteModal();
+  window.scrollTo(0,0);
+}
+
+function openSettings() { document.getElementById('settings-panel')?.classList.add('active'); }
+function closeSettings() { document.getElementById('settings-panel')?.classList.remove('active'); }
+function openPasteModal() { document.getElementById('paste-modal')?.classList.add('active'); }
+function closePasteModal() { document.getElementById('paste-modal')?.classList.remove('active'); }
+
+// ── HAPTIC ENGINE ──
 const haptic = {
   get enabled() { return document.getElementById('haptic-toggle')?.checked !== false && 'vibrate' in navigator; },
-
   tap()     { if (this.enabled) navigator.vibrate(8); },
   success() { if (this.enabled) navigator.vibrate([10, 50, 10]); },
-  warning() { if (this.enabled) navigator.vibrate([20, 80, 20]); },
-  error()   { if (this.enabled) navigator.vibrate([50, 100, 50, 100, 50]); },
-  heavy()   { if (this.enabled) navigator.vibrate(40); },
-
-  announce(msg) {
-    const live = document.getElementById('aria-live-region');
-    if (!live) return;
-    live.textContent = '';
-    requestAnimationFrame(() => { live.textContent = msg; });
-    EE_CORE.info('A11Y', 'Announced: ' + msg.slice(0, 80));
-  }
+  error()   { if (this.enabled) navigator.vibrate([50, 100, 50, 100, 50]); }
 };
 
-// ═══════════════════════════════════════════════════════════
-// ── UTILS ──
-// ═══════════════════════════════════════════════════════════
-function escHtml(str) {
-  return String(str || '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── HANDLE FILE API (file_handlers from manifest) ──
-if ('launchQueue' in window) {
-  window.launchQueue.setConsumer(launchParams => {
-    if (launchParams.files?.length) {
-      EE_CORE.info('LAUNCH', `File handler: ${launchParams.files.length} file(s)`);
-      launchParams.files[0].getFile().then(file => processImageFile(file));
-    }
-  });
-}
-
-// 1. IMPROVED NAVIGATION (Yesterday's Version)
-function navTo(screenId, navBtnId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById('screen-' + screenId);
-    if (target) target.classList.add('active');
-    
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.getElementById(navBtnId);
-    if (activeBtn) activeBtn.classList.add('active');
-    
-    closeSettings();
-    closePasteModal();
-    window.scrollTo(0,0);
-}
-
-// 2. ENHANCED HAPTIC ENGINE
-const haptic = {
-    tap: () => { if (navigator.vibrate) navigator.vibrate(12); },
-    success: () => { if (navigator.vibrate) navigator.vibrate([10, 50, 15]); },
-    error: () => { if (navigator.vibrate) navigator.vibrate([50, 100, 50, 100]); }
-};
-
-
-// 4. KEYBOARD NAVIGATION
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closePasteModal();
-    closeSettings();
-    const err = document.getElementById('error-boundary');
-    if(err) err.classList.remove('show');
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key === '/') { 
-    e.preventDefault(); 
-    openPasteModal(); 
-  }
-});
 // ── GLOBAL ERROR BOUNDARY ──
 window.onerror = function(message, source, lineno, colno, error) {
-  console.error("App Crash caught:", message, "at line:", lineno);
-  
-  const loader = document.getElementById('loading-overlay');
-  if (loader) loader.classList.remove('active');
-
+  console.error("App Crash:", message, "at line:", lineno);
+  document.getElementById('loading-overlay')?.classList.remove('active');
   const boundary = document.getElementById('error-boundary');
   if (boundary) {
     boundary.classList.add('show');
-    const msgElem = document.getElementById('error-boundary-msg');
-    if (msgElem) {
-      msgElem.innerText = "The app ran into a hiccup. Let's try that again!";
-    }
+    const msg = document.getElementById('error-boundary-msg');
+    if (msg) msg.innerText = "The app ran into a hiccup. Let's try that again!";
   }
-  
-  if (typeof haptic !== 'undefined') haptic.error();
   return false;
 };
 </script>
