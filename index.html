@@ -953,15 +953,6 @@ function promptInstall() {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// ── NAVIGATION ──
-// ═══════════════════════════════════════════════════════════
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('screen-' + name);
-  if (el) { el.classList.add('active'); el.classList.add('fade-in'); }
-}
-
-// ═══════════════════════════════════════════════════════════
 // ── API KEY ──
 // ═══════════════════════════════════════════════════════════
 function getApiKey() { return localStorage.getItem('jl_api_key'); }
@@ -1493,7 +1484,7 @@ function renderResult(r) {
       ${r.redFlags?.length ? `
       <div class="red-flags" id="flags-section">
         ${r.redFlags.map(f => `
-          <div class="flag-card">
+          <div class="flag-card-item">
             <span class="flag-icon">⚠️</span>
             <div class="flag-text">
               <strong>${escHtml(f.title)}</strong>
