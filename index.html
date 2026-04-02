@@ -1853,45 +1853,50 @@ window.addEventListener('DOMContentLoaded', () => {
   
   if (action === 'scan') {
 <script>
-        // 1. Navigation Logic (Makes buttons switch screens)
+        // 1. NAVIGATION LOGIC (Fixes Home, History, and Results buttons)
         function navTo(screenId, navBtnId) {
             // Hide all screens
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Show the selected screen
-            const targetScreen = document.getElementById('screen-' + screenId);
-            if (targetScreen) targetScreen.classList.add('active');
+            // Show the target screen
+            const target = document.getElementById('screen-' + screenId);
+            if (target) target.classList.add('active');
             
-            // Update Navigation Bar UI
+            // Update the Bottom Nav Bar icons
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             const activeBtn = document.getElementById(navBtnId);
             if (activeBtn) activeBtn.classList.add('active');
         }
 
-        // 2. The Haptic/Vibration Function
+        // 2. INTERFACE LOGIC (Fixes Settings and Paste Modals)
+        function openSettings() { document.getElementById('settings-panel').style.display = 'flex'; }
+        function closeSettings(e) { if(!e || e.target.id === 'settings-panel') document.getElementById('settings-panel').style.display = 'none'; }
+        
+        function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
+        function closePasteModal(e) { if(!e || e.target.id === 'paste-modal') document.getElementById('paste-modal').classList.remove('open'); }
+
+        // 3. HAPTIC/VIBRATION ENGINE (Fixes the "haptic.tap" errors)
         const haptic = {
             tap: function() {
-                try {
-                    if (window.navigator && window.navigator.vibrate) {
-                        window.navigator.vibrate(10);
-                    }
-                } catch (err) { /* Fail silently */ }
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
             },
             success: function() {
-                try {
-                    if (window.navigator && window.navigator.vibrate) {
-                        window.navigator.vibrate([10, 30, 10]);
-                    }
-                } catch (err) { /* Fail silently */ }
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate([10, 30, 10]);
+                }
             }
         };
 
-        // 3. Helper functions for Modals
-        function openSettings() { document.getElementById('settings-panel').classList.add('open'); }
-        function closeSettings() { document.getElementById('settings-panel').classList.remove('open'); }
-        function openPasteModal() { document.getElementById('paste-modal').classList.add('open'); }
-        function closePasteModal() { document.getElementById('paste-modal').classList.remove('open'); }
+        // 4. TRANSLATION PLACEHOLDER
+        // Note: You will need to paste your original 'analyzeText' function here 
+        // for the "Decode It" button to actually translate text.
+        function analyzeText() {
+            haptic.success();
+            alert("Logic Restored! Please paste your AI Translation code here to process text.");
+        }
 
-        // 4. Global Click Listener (Safety net)
+        // 5. GLOBAL CLICK LISTENER
         document.addEventListener('click', function (event) {
             const isButton = event.target.tagName === 'BUTTON' || event.target.closest('button');
             if (isButton) { haptic.tap(); }
