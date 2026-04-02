@@ -960,13 +960,6 @@ function showScreen(name) {
   const el = document.getElementById('screen-' + name);
   if (el) { el.classList.add('active'); el.classList.add('fade-in'); }
 }
-function navTo(screen, navId) {
-  showScreen(screen);
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(navId)?.classList.add('active');
-  if (screen === 'history') renderHistory();
-  EE_CORE.info('NAV', 'Navigated to ' + screen);
-}
 
 // ═══════════════════════════════════════════════════════════
 // ── API KEY ──
@@ -1851,18 +1844,7 @@ document.addEventListener('keydown', e => {
     openPasteModal(); 
   }
 });
-// ── GLOBAL ERROR CATCHER ──
-window.onerror = function(message, source, lineno, colno, error) {
-  console.error("App Error:", message);
-  const boundary = document.getElementById('error-boundary');
-  if (boundary) {
-    boundary.classList.add('show');
-    const msgElem = document.getElementById('error-boundary-msg');
-    if (msgElem) msgElem.innerText = "The app ran into a hiccup. Let's try that again!";
-  }
-  return false;
-};
-  // ── GLOBAL ERROR BOUNDARY (The "Panic Button") ──
+// ── GLOBAL ERROR BOUNDARY ──
 window.onerror = function(message, source, lineno, colno, error) {
   console.error("App Crash caught:", message, "at line:", lineno);
   
@@ -1880,8 +1862,8 @@ window.onerror = function(message, source, lineno, colno, error) {
     }
   }
   
-  // 3. Trigger an Error Haptic (Triple Vibrate)
-  if (typeof haptic !== 'undefined') haptic.error();
+  // 3. Trigger an Error Haptic
+  if (typeof haptic !== 'undefined' && haptic.error) haptic.error();
 
   return false;
 };
