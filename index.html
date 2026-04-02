@@ -220,15 +220,42 @@
     .jargon-word { font-size:0.82rem; color:var(--text-muted); font-style:italic; }
     .simple-word { font-size:1rem; font-weight:700; color:var(--primary); }
     .simple-explain { font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
-    /* Red flags */
-    .red-flags { display:flex; flex-direction:column; gap:8px; }
-    .flag-card {
-      background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.3);
-      border-radius:14px; padding:14px; display:flex; gap:12px; align-items:flex-start;
+    /* ── YESTERDAY'S RED FLAG STYLING ── */
+    .red-flags { display: flex; flex-direction: column; gap: 12px; }
+    
+    .red-flag-item {
+      border-left: 4px solid #ff4757 !important;
+      background: rgba(255, 71, 87, 0.08) !important;
+      padding: 15px !important;
+      margin-bottom: 4px !important;
+      border-radius: 0 12px 12px 0 !important;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      animation: slideInRedFlag 0.3s ease-out;
     }
-    .flag-icon { font-size:1.2rem; flex-shrink:0; }
-    .flag-text strong { display:block; font-size:0.9rem; color:var(--danger); margin-bottom:4px; }
-    .flag-text span { font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
+
+    .red-flag-item strong {
+      color: #ff4757;
+      display: block;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .red-flag-item span {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    @keyframes slideInRedFlag {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
     /* Translation map */
     .translation-map { display:flex; flex-direction:column; gap:10px; }
     .translation-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); }
@@ -645,6 +672,17 @@
 </nav>
 
 <script>
+// ── PWA AUTO-UPDATE ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (typeof showToast === 'function') {
+      showToast("Updating app to latest version...");
+      setTimeout(() => window.location.reload(), 1000);
+    }
+  });
+}
+
+// ... the rest of your EE_CORE and app logic starts here
 'use strict';
 
 // ═══════════════════════════════════════════════════════════
@@ -1129,8 +1167,23 @@ const VisionPreflight = {
 // ═══════════════════════════════════════════════════════════
 // ── PASTE MODAL ──
 // ═══════════════════════════════════════════════════════════
-function openPasteModal() {
-  document.getElementById('paste-modal').classList.add('open');
+async function openPasteModal() {
+    haptic.tap();
+    document.getElementById('paste-modal').classList.add('open');
+    
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && text.length > 5) {
+        const area = document.getElementById('paste-input');
+        if (area && !area.value) {
+          area.value = text;
+          if(typeof showToast === 'function') showToast("Auto-pasted from clipboard! ✨");
+        }
+      }
+    } catch (err) {
+      console.log("Clipboard access denied");
+    }
+  } // <--- This should be the ONLY closing bracket for the function
   setTimeout(() => document.getElementById('paste-text').focus(), 300);
   // Restore auto-saved draft
   const saved = sessionStorage.getItem('ee_draft');
@@ -1752,18 +1805,6 @@ function escHtml(str) {
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── KEYBOARD SHORTCUTS ──
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closePasteModal();
-    closeSettings();
-    closeDraftModal();
-    document.getElementById('error-boundary').classList.remove('show');
-  }
-  // Ctrl+/ or Cmd+/ to open paste modal
-  if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); openPasteModal(); }
-});
-
 // ── HANDLE FILE API (file_handlers from manifest) ──
 if ('launchQueue' in window) {
   window.launchQueue.setConsumer(launchParams => {
@@ -1774,12 +1815,76 @@ if ('launchQueue' in window) {
   });
 }
 
-// ── STARTUP LOG ──
-EE_CORE.info('APP', `EasyEnglish v3.0.0 started`, {
-  ua: navigator.userAgent.slice(0,80),
-  online: navigator.onLine,
-  sw: 'serviceWorker' in navigator
+// 1. IMPROVED NAVIGATION (Yesterday's Version)
+function navTo(screenId, navBtnId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('screen-' + screenId);
+    if (target) target.classList.add('active');
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.getElementById(navBtnId);
+    if (activeBtn) activeBtn.classList.add('active');
+    
+    closeSettings();
+    closePasteModal();
+    window.scrollTo(0,0);
+}
+
+// 2. ENHANCED HAPTIC ENGINE
+const haptic = {
+    tap: () => { if (navigator.vibrate) navigator.vibrate(12); },
+    success: () => { if (navigator.vibrate) navigator.vibrate([10, 50, 15]); },
+    error: () => { if (navigator.vibrate) navigator.vibrate([50, 100, 50, 100]); }
+};
+
+
+// 4. KEYBOARD NAVIGATION
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePasteModal();
+    closeSettings();
+    const err = document.getElementById('error-boundary');
+    if(err) err.classList.remove('show');
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === '/') { 
+    e.preventDefault(); 
+    openPasteModal(); 
+  }
 });
+// ── GLOBAL ERROR CATCHER ──
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("App Error:", message);
+  const boundary = document.getElementById('error-boundary');
+  if (boundary) {
+    boundary.classList.add('show');
+    const msgElem = document.getElementById('error-boundary-msg');
+    if (msgElem) msgElem.innerText = "The app ran into a hiccup. Let's try that again!";
+  }
+  return false;
+};
+  // ── GLOBAL ERROR BOUNDARY (The "Panic Button") ──
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("App Crash caught:", message, "at line:", lineno);
+  
+  // 1. Stop any stuck loading spinners
+  const loader = document.getElementById('loading-overlay');
+  if (loader) loader.classList.remove('active');
+
+  // 2. Show the Error Screen
+  const boundary = document.getElementById('error-boundary');
+  if (boundary) {
+    boundary.classList.add('show');
+    const msgElem = document.getElementById('error-boundary-msg');
+    if (msgElem) {
+      msgElem.innerText = "The app ran into a hiccup. Let's try that again!";
+    }
+  }
+  
+  // 3. Trigger an Error Haptic (Triple Vibrate)
+  if (typeof haptic !== 'undefined') haptic.error();
+
+  return false;
+};
 </script>
 </body>
 </html>
