@@ -1156,46 +1156,58 @@ const VisionPreflight = {
 // ── PASTE MODAL ──
 // ═══════════════════════════════════════════════════════════
 async function openPasteModal() {
-    haptic.tap();
-    document.getElementById('paste-modal').classList.add('open');
+    if (typeof haptic !== 'undefined') haptic.tap();
+    const modal = document.getElementById('paste-modal');
+    if (modal) modal.classList.add('active'); // Changed 'open' to 'active' to match your CSS
+    
+    const area = document.getElementById('paste-text');
     
     try {
       const text = await navigator.clipboard.readText();
-      if (text && text.length > 5) {
-        const area = document.getElementById('paste-input');
-        if (area && !area.value) {
+      if (text && text.length > 5 && area && !area.value) {
           area.value = text;
           if(typeof showToast === 'function') showToast("Auto-pasted from clipboard! ✨");
-        }
       }
     } catch (err) {
       console.log("Clipboard access denied");
     }
-  } // <--- This should be the ONLY closing bracket for the function
-  setTimeout(() => document.getElementById('paste-text').focus(), 300);
-  // Restore auto-saved draft
-  const saved = sessionStorage.getItem('ee_draft');
-  if (saved && !document.getElementById('paste-text').value) {
-    document.getElementById('paste-text').value = saved;
-    updateWordCount(document.getElementById('paste-text'));
-  }
-}
+
+    // This code now correctly stays INSIDE the function
+    setTimeout(() => { if(area) area.focus(); }, 300);
+    
+    const saved = sessionStorage.getItem('ee_draft');
+    if (saved && area && !area.value) {
+        area.value = saved;
+        updateWordCount(area);
+    }
+} // <--- This is now the ONLY closing bracket for the function
+
 function closePasteModal(e) {
-  if (!e || e.target === document.getElementById('paste-modal')) {
-    document.getElementById('paste-modal').classList.remove('open');
+  const modal = document.getElementById('paste-modal');
+  if (!e || e.target === modal || e === 'force') {
+    if (modal) modal.classList.remove('active');
   }
 }
+
 function analyzeText() {
-  const text = document.getElementById('paste-text').value.trim();
-  if (!text) { showToast('⚠️ Please paste some text first!'); haptic.warning(); return; }
+  const area = document.getElementById('paste-text');
+  const text = area ? area.value.trim() : "";
+  if (!text) { 
+    if(typeof showToast === 'function') showToast('⚠️ Please paste some text first!'); 
+    return; 
+  }
   sessionStorage.removeItem('ee_draft');
-  document.getElementById('paste-modal').classList.remove('open');
-  runAnalysis({ type: 'text', text, label: text.slice(0, 60) + '…' });
+  closePasteModal('force');
+  if (typeof runAnalysis === 'function') {
+    runAnalysis({ type: 'text', text, label: text.slice(0, 60) + '…' });
+  }
 }
+
 function updateWordCount(textarea) {
+  if (!textarea) return;
   const words = textarea.value.trim().split(/\s+/).filter(w=>w).length;
-  document.getElementById('word-count').textContent = `${words} word${words!==1?'s':''}`;
-  // Auto-save draft
+  const countElem = document.getElementById('word-count');
+  if (countElem) countElem.textContent = `${words} word${words!==1?'s':''}`;
   sessionStorage.setItem('ee_draft', textarea.value);
 }
 
