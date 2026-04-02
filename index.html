@@ -1870,26 +1870,33 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 <script>
-  // 1. The Haptic Function (The physical "click" feel)
+  <script>
+  // 1. The Haptic Function with a "Safety Filter"
   function triggerHaptic() {
-    if ("vibrate" in navigator) {
-        navigator.vibrate(10); // A tiny, professional 10ms pulse
+    try {
+        if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(10);
+        }
+    } catch (e) {
+        console.log("Vibration not supported or blocked");
     }
   }
-            
-  // 2. Automatically add the feel to EVERY button in your app
-  // This way, you don't need to know the ID names
+
+  // 2. Safe Button Listener
   document.addEventListener('click', function (e) {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+    // This finds the button even if you click the text inside it
+    const btn = e.target.closest('button');
+    if (btn) {
         triggerHaptic();
     }
   });
 
-  // 3. Optional: Add it to the Input Area
-  // If you want a tiny buzz when they start typing (very premium feel)
+  // 3. Safe Input Focus
   const jargonInput = document.querySelector('textarea') || document.querySelector('input');
   if (jargonInput) {
-    jargonInput.addEventListener('focus', () => triggerHaptic());
+    jargonInput.addEventListener('focus', () => {
+        triggerHaptic();
+    });
   }
 </script>
 </body>
