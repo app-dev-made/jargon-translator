@@ -1895,33 +1895,5 @@ window.addEventListener('DOMContentLoaded', () => {
   // If your AI-generated code had a function like "translateText()", 
   // make sure it is still inside a <script> tag!
 </script>
-  // 1. The Haptic Function with a "Safety Filter"
-  function triggerHaptic() {
-    try {
-        if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(10);
-        }
-    } catch (e) {
-        console.log("Vibration not supported or blocked");
-    }
-  }
-
-  // 2. Safe Button Listener
-  document.addEventListener('click', function (e) {
-    // This finds the button even if you click the text inside it
-    const btn = e.target.closest('button');
-    if (btn) {
-        triggerHaptic();
-    }
-  });
-
-  // 3. Safe Input Focus
-  const jargonInput = document.querySelector('textarea') || document.querySelector('input');
-  if (jargonInput) {
-    jargonInput.addEventListener('focus', () => {
-        triggerHaptic();
-    });
-  }
-</script>
 </body>
 </html>
