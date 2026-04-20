@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "/jargon-translator/",
+        "package_name": "io.github.app_dev_made.easyenglish",
         "sha256_cert_fingerprints": ["A3:FC:76:64:CC:01:A5:75:81:39:81:6B:85:9C:DD:48:0D:D0:DE:D3:47:5D:F2:59:68:73:61:2C:24:FD:FE:0A"]
       }
     }]
