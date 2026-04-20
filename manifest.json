@@ -1,7 +1,8 @@
+
 {
   "name": "EasyEnglish – Plain English Translator",
   "short_name": "EasyEnglish",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
   "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
@@ -14,13 +15,8 @@
   "lang": "en-US",
   "dir": "ltr",
   "iarc_rating_id": "e84d416b-67a4-4366-a32b-6799071c77f0",
-  "prefer_related_applications": true,
+  "prefer_related_applications": false,
   "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=io.github.app_dev_made.easyenglish",
-      "id": "io.github.app_dev_made.easyenglish"
-    },
     {
       "platform": "webapp",
       "url": "https://app-dev-made.github.io/jargon-translator/manifest.json"
@@ -112,7 +108,7 @@
       "text": "text",
       "url": "url"
     }
-  ],
+  },
   "protocol_handlers": [
     {
       "protocol": "web+easyenglish",
