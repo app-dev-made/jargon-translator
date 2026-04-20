@@ -3,7 +3,7 @@
   "short_name": "EasyEnglish",
   "version": "1.0.2",
   "description": "Instantly translate legal jargon, complex contracts, and business terms into plain English. Spot red flags and understand your rights with AI intelligence.",
-  "id": "io.github.app_dev_made.easyenglish",
+  "id": "/jargon-translator/",
   "start_url": "/jargon-translator/index.html?utm_source=pwa&utm_medium=homescreen",
   "scope": "/jargon-translator/",
   "display": "standalone",
