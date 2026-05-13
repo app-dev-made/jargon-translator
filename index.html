@@ -1320,51 +1320,27 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ── GEMINI API CALLS ──
 // ═══════════════════════════════════════════════════════════
 async function callGeminiText(text, apiKey) {
-  EE_CORE.info('API', 'Calling Gemini for text analysis');
-  const t0 = performance.now();
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+  const res = await fetch('https://easyenglish-api.vercel.app/api/translate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: buildPrompt(text) }] }],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.4 }
-    })
+    body: JSON.stringify({ prompt: buildPrompt(text) })
   });
-  if (!res.ok) {
-    const errText = await res.text().catch(()=>'');
-    EE_CORE.error('API', `Gemini error ${res.status}`, errText.slice(0,200));
-    throw new Error(`API ${res.status}`);
-  }
+  if (!res.ok) { const errText = await res.text().catch(()=>''); throw new Error(`API ${res.status}: ${errText.slice(0,100)}`); }
   const data = await res.json();
-  EE_CORE.info('API', `Gemini responded in ${Math.round(performance.now()-t0)}ms`);
   const jsonStr = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!jsonStr) throw new Error('Empty response');
-  // Strip markdown code fences if present
   const clean = jsonStr.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
   return JSON.parse(clean);
 }
 
 async function callGeminiImage(base64, mimeType, apiKey) {
-  EE_CORE.info('API', `Calling Gemini for image analysis (${mimeType})`);
-  const t0 = performance.now();
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+  const res = await fetch('https://easyenglish-api.vercel.app/api/translate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [
-        { text: buildPrompt('[Image document — extract and translate all visible text]') },
-        { inlineData: { mimeType, data: base64 } }
-      ]}],
-      generationConfig: { responseMimeType: 'application/json', temperature: 0.4 }
-    })
+    body: JSON.stringify({ prompt: buildPrompt('[Image document — extract and translate all visible text]'), imageData: base64, mimeType })
   });
-  if (!res.ok) {
-    const errText = await res.text().catch(()=>'');
-    EE_CORE.error('API', `Gemini image error ${res.status}`, errText.slice(0,200));
-    throw new Error(`API ${res.status}`);
-  }
+  if (!res.ok) { const errText = await res.text().catch(()=>''); throw new Error(`API ${res.status}: ${errText.slice(0,100)}`); }
   const data = await res.json();
-  EE_CORE.info('API', `Gemini image responded in ${Math.round(performance.now()-t0)}ms`);
   const jsonStr = data.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!jsonStr) throw new Error('Empty response');
   const clean = jsonStr.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
