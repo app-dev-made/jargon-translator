@@ -683,6 +683,7 @@
 // ═══════════════════════════════════════════════════════════
 let currentAnalysis = null;
 let deferredInstallPrompt = null;
+const EMBEDDED_API_KEY = 'AIzaSyCVcIoz5tRMnbIg2rWOX6OmXlMXwJ1lKAM';
 
 // ═══════════════════════════════════════════════════════════
 // ── 1. EE_CORE: ENTERPRISE LOGGING & DATA SAFETY ──
@@ -976,8 +977,8 @@ function navTo(screen, navId) {
 // ═══════════════════════════════════════════════════════════
 // ── API KEY ──
 // ═══════════════════════════════════════════════════════════
-function getApiKey() { return localStorage.getItem('jl_api_key'); }
-function saveApiKey() {
+function getApiKey() { return localStorage.getItem('jl_api_key') || EMBEDDED_API_KEY; }
+  function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { showToast('⚠️ Please paste your API key'); return; }
   localStorage.setItem('jl_api_key', key);
@@ -1004,9 +1005,8 @@ function updateApiStatus() {
 }
 updateApiStatus();
 (function() {
-  if (!localStorage.getItem('jl_api_key') && !localStorage.getItem('jl_demo_mode')) {
-    document.getElementById('api-setup').style.display = 'block';
-  }
+  document.getElementById('api-setup').style.display = 'none';
+  updateApiStatus();
 })();
 
 // ═══════════════════════════════════════════════════════════
