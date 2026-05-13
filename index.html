@@ -1269,7 +1269,7 @@ async function runAnalysis(input) {
   document.getElementById('processing-percent').textContent = '0%';
 
   for (let i = 0; i < steps.length; i++) {
-    await delay(550);
+    await delay(200);
     if (i > 0) document.getElementById(steps[i-1]).className = 'proc-step done';
     document.getElementById(steps[i]).className = 'proc-step active';
     document.getElementById('processing-percent').textContent = percents[i] + '%';
