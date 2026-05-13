@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'easyenglish-v7-ultra';
+const CACHE_NAME = 'easyenglish-v8';
 const STATIC_ASSETS = [
   '/jargon-translator/',
   '/jargon-translator/index.html',
