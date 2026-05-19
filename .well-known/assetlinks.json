@@ -1,21 +1,23 @@
-[{
-  "relation": [
-    "delegate_permission/common.handle_all_urls"
-  ],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "io.github.app_dev_made.easyenglish",
-    "sha256_cert_fingerprints": [
-      "34:BA:6C:CE:D7:A0:F3:D2:86:AC:6D:5C:0D:49:2D:7C:C2:C3:2E:AB:8E:86:01:A5:9C:43:3A:29:FA:3E:60:98"
-    ]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.app_dev_made.easyenglish",
+      "sha256_cert_fingerprints": [
+        "34:BA:6C:CE:D7:A0:F3:D2:86:AC:6D:5C:0D:49:2D:7C:C2:C3:2E:AB:8E:86:01:A5:9C:43:3A:29:FA:3E:60:98"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "web",
+      "site": "https://app-dev-made.github.io"
+    }
   }
-},
-{
-  "relation": [
-    "delegate_permission/common.handle_all_urls"
-  ],
-  "target": {
-    "namespace": "web",
-    "site": "https://app-dev-made.github.io"
-  }
-}]
+]
