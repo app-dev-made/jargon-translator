@@ -17,7 +17,7 @@
     ],
     "target": {
       "namespace": "web",
-      "site": "https://app-dev-made.github.io"
+      "site": "https://app-dev-made.github.io/jargon-translator"
     }
   }
 ]
