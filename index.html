@@ -1500,7 +1500,7 @@ function renderResult(r) {
   <button type="button" class="action-btn action-primary" onclick="openDraftEmail(); haptic.tap();">
     ✉️ Draft a Follow-Up Question
   </button>
- <button type="button" class="action-btn action-accent" onclick="event.preventDefault(); try { shareResult(); } catch(err) { alert(err.message); } haptic.tap();">📥 Share This Analysis</button>
+ <button type="button" class="action-btn action-accent" onclick="event.preventDefault(); shareResult(); haptic.tap();">📥 Share This Analysis</button>
   <button type="button" class="action-btn action-export" onclick="exportAnalysis(); haptic.tap();">
     💾 Save as Text File
   </button>
