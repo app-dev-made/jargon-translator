@@ -1564,7 +1564,7 @@ function copyDraft() {
 // ═══════════════════════════════════════════════════════════
 async function shareResult() {
   if (!currentAnalysis) return;
-  const text = `${currentAnalysis.emoji} ${currentAnalysis.headline}\n\n${currentAnalysis.bottomLine}\n\nAnalyzed with EasyEnglish`;
+  const text = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n' + currentAnalysis.bottomLine + '\n\nAnalyzed with EasyEnglish';
   if (navigator.share) {
     try { await navigator.share({ title: 'EasyEnglish Analysis', text, url: location.href }); }
     catch(e) { /* user cancelled */ }
@@ -1578,35 +1578,28 @@ function exportAnalysis() {
   if (!currentAnalysis) return;
   try {
     const lines = [
-      `EasyEnglish Analysis`,
-      `Generated: ${new Date(currentAnalysis.date).toLocaleString()}`,
-      `Document: ${currentAnalysis.label}`,
-      ``,
-      `━━━ SUMMARY ━━━`,
-      `${currentAnalysis.emoji} ${currentAnalysis.headline}`,
-      ``,
-      `What this means for you: ${currentAnalysis.bottomLine}`,
-      ``,
-      `━━━ GLOSSARY ━━━`,
-      ...(currentAnalysis.glossary || []).map(g => `• "${g.jargon}" = ${g.simple}\n  ${g.explain}`),
-      ``,
-      `━━━ RED FLAGS ━━━`,
-      ...(currentAnalysis.redFlags?.length ? currentAnalysis.redFlags.map(f => `⚠️ ${f.title}\n   ${f.description}`) : ['No red flags found.']),
-      ``,
-      `━━━ TRANSLATIONS ━━━`,
-      ...(currentAnalysis.translations || []).map(t => `Original: ${t.original}\nSimple: ${t.simple}`),
-      ``,
-      `━━━ DRAFT EMAIL ━━━`,
-      currentAnalysis.draftEmail || '',
-      ``,
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-      `⚠️ NOT LEGAL ADVICE. Results are AI-generated for educational purposes only.`,
-      `Always consult a licensed attorney before making legal decisions.`
-    ];
+  'EasyEnglish Analysis',
+  'Generated: ' + new Date(currentAnalysis.date).toLocaleString(),
+  'Document: ' + currentAnalysis.label,
+  '',
+  '— SUMMARY —',
+  '',
+  '— GLOSSARY —',
+  ...(currentAnalysis.glossary || []).map(g => '"' + g.jargon + '" = ' + g.simple + '\n ' + g.explain),
+  '',
+  '— RED FLAGS —',
+  ...(currentAnalysis.redFlags?.length ? currentAnalysis.redFlags.map(f => '⚠️ ' + f.title + '\n ' + f.description) : ['No red flags found.']),
+  '',
+  '— TRANSLATIONS —',
+  ...(currentAnalysis.translations || []).map(t => 'Original: ' + t.original + '\nSimple: ' + t.simple),
+  '',
+  '— DRAFT EMAIL —',
+  currentAnalysis.draftEmail || '',
+];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url; a.download = `analysis-${Date.now()}.txt`; a.click();
+    a.href = url; a.download = 'analysis-' + Date.now() + '.txt'; a.click();
     URL.revokeObjectURL(url);
     showToast('💾 Analysis saved!');
     EE_CORE.info('EXPORT', 'Analysis exported as text');
