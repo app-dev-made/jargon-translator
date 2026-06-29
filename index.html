@@ -558,8 +558,8 @@
         <div style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.6;">🔍</div>
         <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 0.5rem;">No Results Yet</h2>
         <p style="max-width: 250px; line-height: 1.5;">Start an analysis or upload a document to see your plain English results here.</p>
-        <button onclick="document.querySelector('[data-screen=\'scan\']').click()" 
-                style="margin-top: 1.5rem; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
+       <button type="button" onclick="event.preventDefault(); startOver(); haptic.tap();"
+        style="margin-top: 1.5rem; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;">
             Start Analysis
         </button>
     </div>
