@@ -1496,20 +1496,20 @@ function renderResult(r) {
       </div>
     </div>` : ''}
 
-    <div class="action-area fade-in">
-      <button class="action-btn action-primary" onclick="openDraftEmail(); haptic.tap();">
-        ✉️ Draft a Follow-Up Question
-      </button>
-      <button class="action-btn action-accent" onclick="shareResult(); haptic.tap();">
-        📤 Share This Analysis
-      </button>
-      <button class="action-btn action-export" onclick="exportAnalysis(); haptic.tap();">
-        💾 Save as Text File
-      </button>
-      <button class="action-btn action-secondary" onclick="startOver(); haptic.tap();">
-        🔍 Scan Another Document
-      </button>
-    </div>
+<div class="action-area fade-in">
+  <button type="button" class="action-btn action-primary" onclick="openDraftEmail(); haptic.tap();">
+    ✉️ Draft a Follow-Up Question
+  </button>
+  <button type="button" class="action-btn action-accent" onclick="shareResult(); haptic.tap();">
+    📥 Share This Analysis
+  </button>
+  <button type="button" class="action-btn action-export" onclick="exportAnalysis(); haptic.tap();">
+    💾 Save as Text File
+  </button>
+  <button type="button" class="action-btn action-secondary" onclick="startOver(); haptic.tap();">
+    🔍 Scan Another Document
+  </button>
+</div>
 
     <div class="legal-footer">
       <strong>⚠️ Not legal advice.</strong> Results are AI-generated for educational purposes only
