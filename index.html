@@ -1500,8 +1500,7 @@ function renderResult(r) {
   <button type="button" class="action-btn action-primary" onclick="openDraftEmail(); haptic.tap();">
     ✉️ Draft a Follow-Up Question
   </button>
- <button type="button" class="action-btn action-accent" onclick="event.preventDefault(); shareResult(); haptic.tap();">📥 Share This Analysis</button>
-  <button type="button" class="action-btn action-export" onclick="exportAnalysis(); haptic.tap();">
+<button type="button" class="action-btn action-accent" onclick="event.preventDefault(); try { shareResult(); } catch(err) { alert('Button error: ' + err.message); } haptic.tap();">📥 Share This Analysis</button>  <button type="button" class="action-btn action-export" onclick="exportAnalysis(); haptic.tap();">
     💾 Save as Text File
   </button>
   <button type="button" class="action-btn action-secondary" onclick="startOver(); haptic.tap();">
@@ -1563,15 +1562,23 @@ function copyDraft() {
 // ── SHARE & EXPORT ──
 // ═══════════════════════════════════════════════════════════
 async function shareResult() {
-  if (!currentAnalysis) return;
-  const text = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n' + currentAnalysis.bottomLine + '\n\nAnalyzed with EasyEnglish';
-  if (navigator.share) {
-    try { await navigator.share({ title: 'EasyEnglish Analysis', text, url: location.href }); }
-    catch(e) { /* user cancelled */ }
-  } else {
-    navigator.clipboard?.writeText(text).then(() => showToast('📋 Analysis copied!'));
+  try {
+    if (!currentAnalysis) {
+      alert('Error: currentAnalysis data is missing!');
+      return;
+    }
+    const text = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n' + currentAnalysis.bottomLine + '\n\nAnalyzed with EasyEnglish';
+    
+    if (navigator.share) {
+      await navigator.share({ title: 'EasyEnglish Analysis', text, url: location.href });
+    } else {
+      await navigator.clipboard?.writeText(text);
+      showToast('📋 Analysis copied!');
+    }
+    EE_CORE.info('SHARE', 'Result shared');
+  } catch (error) {
+    alert('Function internal error: ' + error.message);
   }
-  EE_CORE.info('SHARE', 'Result shared');
 }
 
 function exportAnalysis() {
