@@ -1189,8 +1189,16 @@ function closePasteModal(e) {
   }
 }
 function analyzeText() {
-  const text = document.getElementById('paste-text').value.trim();
-  if (!text) { showToast('⚠️ Please paste some text first!'); haptic.warning(); return; }
+    const text = document.getElementById('paste-text').value.trim();
+    if (!text) { showToast('⚠️ Please paste some text first!'); haptic.warning(); return; }
+    
+    // M-04 Fix: Check minimum word count
+    const wordCount = text.split(/\s+/).filter(Boolean).length;
+    if (wordCount < 5) {
+        showToast('⚠️ Please enter at least 5 words to analyze.');
+        haptic.warning();
+        return;
+    }
   sessionStorage.removeItem('ee_draft');
   document.getElementById('paste-modal').classList.remove('open');
   runAnalysis({ type: 'text', text, label: text.slice(0, 60) + '…' });
