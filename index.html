@@ -1570,31 +1570,46 @@ function copyDraft() {
 // ── SHARE & EXPORT ──
 // ═══════════════════════════════════════════════════════════
 async function shareResult() {
-  try {
-    if (!currentAnalysis) {
-      alert('Error: currentAnalysis data is missing!');
-      return;
+    try {
+        if (!currentAnalysis) {
+            alert('Error: currentAnalysis data is missing!');
+            return;
+        }
+
+        // Build complete share text including bullets/body if available
+        let textContent = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n';
+        if (currentAnalysis.bullets && Array.isArray(currentAnalysis.bullets)) {
+            textContent += currentAnalysis.bullets.map(b => '• ' + b).join('\n') + '\n\n';
+        }
+        textContent += currentAnalysis.bottomLine + '\n\nAnalyzed with EasyEnglish';
+
+        // Check for Web Share API support
+        if (navigator.share) {
+            await navigator.share({
+                title: 'EasyEnglish Analysis',
+                text: textContent
+            });
+            EE_CORE.info('SHARE', 'Result shared via native share sheet');
+        } else {
+            // Fallback for browsers without Web Share support
+            await navigator.clipboard.writeText(textContent);
+            showToast('📋 Analysis copied to clipboard!');
+            EE_CORE.info('SHARE', 'Result copied to clipboard fallback');
+        }
+    } catch (error) {
+        // Suppress simple user-cancel dismissals
+        if (error.name !== 'AbortError') {
+            console.error('Share error:', error);
+            // Fallback to clipboard if share fails
+            try {
+                let textContent = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n' + currentAnalysis.bottomLine;
+                await navigator.clipboard.writeText(textContent);
+                showToast('📋 Analysis copied to clipboard!');
+            } catch (e) {
+                showToast('⚠️ Could not share analysis');
+            }
+        }
     }
-    const textContent = currentAnalysis.emoji + ' ' + currentAnalysis.headline + '\n\n' + currentAnalysis.bottomLine + '\n\nAnalyzed with EasyEnglish';
-    
-    if (navigator.share) {
-      // We combine them or structure it so the text string takes center stage
-      await navigator.share({
-        title: 'EasyEnglish Analysis',
-        text: textContent,
-        url: location.href
-      });
-    } else {
-      await navigator.clipboard?.writeText(textContent);
-      showToast('📋 Analysis copied!');
-    }
-    EE_CORE.info('SHARE', 'Result shared');
-  } catch (error) {
-    // Suppress simple user-cancel dismissals so they don't look like app breaks
-    if (error.name !== 'AbortError') {
-      alert('Function internal error: ' + error.message);
-    }
-  }
 }
 
 function exportAnalysis() {
