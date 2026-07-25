@@ -461,6 +461,10 @@ body.dark-mode {
   </style>
 </head>
 <body>
+<!-- S-04 Splash Screen -->
+<div id="splash" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity 0.3s;">
+  <img src="icons/icon-192x192.png" width="80" height="80" style="border-radius:16px;" alt="Logo">
+</div>
 
 <!-- ── ACCESSIBILITY: ARIA LIVE REGION ── -->
 <div id="aria-live-region" class="sr-only" role="status" aria-live="assertive" aria-atomic="true"></div>
@@ -1910,6 +1914,11 @@ window.addEventListener('DOMContentLoaded', () => {
   initTheme(); // <-- ADD THIS LINE HERE
   const urlParams = new URLSearchParams(window.location.search);
   const action = urlParams.get('action');
+  const splash = document.getElementById('splash');
+  if (splash) {
+  splash.style.opacity = '0';
+  setTimeout(() => splash.remove(), 300);
+}
   
   if (action === 'scan') {
     // Wait a brief moment for the app to load, then trigger camera
