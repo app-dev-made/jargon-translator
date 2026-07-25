@@ -1723,16 +1723,34 @@ function showScreen(name) {
 // ═══════════════════════════════════════════════════════════
 // ── SETTINGS ──
 // ═══════════════════════════════════════════════════════════
-function openSettings()  { document.getElementById('settings-panel').classList.add('open'); updateApiStatus(); // Load saved Simple Word Mode state
-const savedSimpleMode = localStorage.getItem('simple-word-mode') === 'true';
-const simpleToggle = document.getElementById('simple-word-mode-toggle');
-if (simpleToggle) {
-    simpleToggle.checked = savedSimpleMode;
+function openSettings() {
+    document.getElementById('settings-panel').classList.add('open');
+    updateApiStatus();
+
+    // Push state so Android Back button closes settings instead of quitting app (M-06 Fix)
+    history.pushState({ modalOpen: true }, '');
+
+    // Load saved Simple Word Mode state
+    const savedSimpleMode = localStorage.getItem('simple-word-mode') === 'true';
+    const simpleToggle = document.getElementById('simple-word-mode-toggle');
+    if (simpleToggle) {
+        simpleToggle.checked = savedSimpleMode;
+    }
 }
-function closeSettings(e) {
-  if (!e || e.target === document.getElementById('settings-panel'))
+
+function closeSettings() {
     document.getElementById('settings-panel').classList.remove('open');
+    if (history.state && history.state.modalOpen) {
+        history.back();
+    }
 }
+// Handle Android system back button/gesture for settings panel (M-06 Fix)
+window.addEventListener('popstate', (e) => {
+    const settingsPanel = document.getElementById('settings-panel');
+    if (settingsPanel && settingsPanel.classList.contains('open')) {
+        settingsPanel.classList.remove('open');
+    }
+});
 document.getElementById('history-toggle').addEventListener('change', function() {
   localStorage.setItem('history-toggle', this.checked);
 });
