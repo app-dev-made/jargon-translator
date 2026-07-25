@@ -1715,13 +1715,21 @@ function showScreen(name) {
 // ═══════════════════════════════════════════════════════════
 // ── SETTINGS ──
 // ═══════════════════════════════════════════════════════════
-function openSettings()  { document.getElementById('settings-panel').classList.add('open'); updateApiStatus(); }
+function openSettings()  { document.getElementById('settings-panel').classList.add('open'); updateApiStatus(); // Load saved Simple Word Mode state
+const savedSimpleMode = localStorage.getItem('simple-word-mode') === 'true';
+const simpleToggle = document.getElementById('simple-word-mode-toggle');
+if (simpleToggle) {
+    simpleToggle.checked = savedSimpleMode;
+}
 function closeSettings(e) {
   if (!e || e.target === document.getElementById('settings-panel'))
     document.getElementById('settings-panel').classList.remove('open');
 }
 document.getElementById('history-toggle').addEventListener('change', function() {
   localStorage.setItem('history-toggle', this.checked);
+});
+document.getElementById('simple-word-mode-toggle').addEventListener('change', function () {
+    localStorage.setItem('simple-word-mode', this.checked);
 });
 
 function toggleLogViewer() {
