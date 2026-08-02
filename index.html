@@ -1930,17 +1930,16 @@ window.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => splash.remove(), 300);
     }
-  
-  if (action === 'scan') {
-    // Wait a brief moment for the app to load, then trigger camera
-    setTimeout(() => {
-      if (typeof triggerCamera === 'function') triggerCamera();
-    }, 500);
-  } else if (action === 'paste') {
-    setTimeout(() => {
-      if (typeof openPasteModal === 'function') openPasteModal();
-    }, 500);
-  }
+    if (action === 'scan') {
+        // Wait a moment for the app to load, then trigger camera
+        setTimeout(() => {
+            if (typeof triggerCamera === 'function') triggerCamera();
+        }, 500);
+    } else if (action === 'paste') {
+        setTimeout(() => {
+            if (typeof openPasteModal === 'function') openPasteModal();
+        }, 500);
+    }
 });
 </script>
 </body>
