@@ -1022,7 +1022,7 @@ function navTo(screen, navId) {
 // ── API KEY ──
 // ═══════════════════════════════════════════════════════════
 function getApiKey() { return localStorage.getItem('jl_api_key') || EMBEDDED_API_KEY; }
-  function saveApiKey() {
+function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { showToast('⚠️ Please paste your API key'); return; }
   localStorage.setItem('jl_api_key', key);
