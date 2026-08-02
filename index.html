@@ -905,7 +905,7 @@ if ('serviceWorker' in navigator) {
       showToast('🆕 App updated! Refresh for the latest version.');
     });
   }).catch(err => EE_CORE.error('SW', 'Registration failed', err.message));
-}
+}c
 
 // ═══════════════════════════════════════════════════════════
 // ── ERROR BOUNDARY ──
@@ -913,9 +913,14 @@ if ('serviceWorker' in navigator) {
 // ═══════════════════════════════════════════════════════════
 window.onerror = function(message, source, lineno, colno, error) {
   EE_CORE.error('CRASH', `Uncaught: ${message}`, { source, lineno, colno });
-  document.getElementById('error-boundary-msg').textContent =
-    `Something unexpected happened (${message}). Your data is safe — tap Restart to continue.`;
-  document.getElementById('error-boundary').classList.add('show');
+  const msgEl = document.getElementById('error-boundary-msg');
+    if (msgEl) {
+        msgEl.textContent = `Something unexpected happened (${message }). Your data is safe — tap Restart to continue.`;
+    }
+    const boundaryEl = document.getElementById('error-boundary');
+    if (boundaryEl) {
+        boundaryEl.classList.add('show');
+    }
   haptic.error();
   return true; // prevent default browser error
 };
@@ -948,13 +953,18 @@ updateNetworkStatus();
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
-  document.getElementById('install-banner').classList.add('show');
-  EE_CORE.info('PWA', 'Install prompt captured');
-});
+  const banner = document.getElementById('install-banner');
+if (banner) {
+    banner.classList.add('show');
+}
+EE_CORE.info('PWA', 'Install prompt captured');
 window.addEventListener('appinstalled', () => {
-  document.getElementById('install-banner').classList.remove('show');
-  showToast('🎉 EasyEnglish installed!');
-  EE_CORE.info('PWA', 'App installed');
+    const banner = document.getElementById('install-banner');
+    if (banner) {
+        banner.classList.remove('show');
+    }
+    showToast('🎉 EasyEnglish installed!');
+    EE_CORE.info('PWA', 'App installed');
 });
 function promptInstall() {
   if (deferredInstallPrompt) {
