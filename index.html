@@ -1913,21 +1913,23 @@ function initTheme() {
   if (themeSelect) { themeSelect.value = savedTheme; }
   applyTheme(savedTheme);
 }
-// ── STARTUP LOG ──
+// — STARTUP LOG —
 EE_CORE.info('APP', `EasyEnglish v3.0.0 started`, {
     ua: navigator.userAgent.slice(0,80),
     online: navigator.onLine,
     sw: 'serviceWorker' in navigator
-  // ── HANDLE SHORTCUT ACTIONS ──
+});
+
+// — HANDLE SHORTCUT ACTIONS —
 window.addEventListener('DOMContentLoaded', () => {
-  initTheme(); // <-- ADD THIS LINE HERE
-  const urlParams = new URLSearchParams(window.location.search);
-  const action = urlParams.get('action');
-  const splash = document.getElementById('splash');
-  if (splash) {
-  splash.style.opacity = '0';
-  setTimeout(() => splash.remove(), 300);
-}
+    initTheme(); // <-- ADD THIS LINE HERE
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+    const splash = document.getElementById('splash');
+    if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 300);
+    }
   
   if (action === 'scan') {
     // Wait a brief moment for the app to load, then trigger camera
