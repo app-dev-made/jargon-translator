@@ -502,6 +502,10 @@ body.dark-mode {
     <h2>Decode Any<br/><span>Scary Document</span></h2>
     <p>Legal letters, work contracts, rental agreements — we'll translate the confusing stuff into plain language.</p>
   </div>
+  <div class="lang-row" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 14px;">
+    <label for="lang-select" style="font-size:0.85rem;color:var(--text-muted);">🌐 Explain in:</label>
+    <select id="lang-select" onchange="setLang(this.value); haptic.tap();" aria-label="Language for explanations" style="background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:10px;font-size:0.95rem;"></select>
+  </div>
 
   <div class="install-banner" id="install-banner">
     <span style="font-size:1.3rem">📲</span>
@@ -716,6 +720,241 @@ body.dark-mode {
 // ═══════════════════════════════════════════════════════════
 let currentAnalysis = null;
 let deferredInstallPrompt = null;
+
+// ═══════════════════════════════════════════════════════════
+// ── LANGUAGE MODES + READ ALOUD ──
+// ═══════════════════════════════════════════════════════════
+const LANGUAGES = {
+  en: { label: 'English',  name: 'English',            voice: 'en-US' },
+  hi: { label: 'हिन्दी',    name: 'Hindi',              voice: 'hi-IN' },
+  zh: { label: '中文',      name: 'Simplified Chinese', voice: 'zh-CN' },
+  te: { label: 'తెలుగు',    name: 'Telugu',             voice: 'te-IN' },
+  ko: { label: '한국어',    name: 'Korean',             voice: 'ko-KR' },
+  es: { label: 'Español',  name: 'Spanish',            voice: 'es-US' },
+  ja: { label: '日本語',    name: 'Japanese',           voice: 'ja-JP' }
+};
+let readAloudActive = false;
+let readAloudSession = 0;
+
+// Interface labels. Order of each array: hi, zh, te, ko, es, ja. English text in the page is the key.
+const I18N_ORDER = ['hi','zh','te','ko','es','ja'];
+const I18N = {
+  'Decode Any': ['किसी भी','看懂任何','భయపెట్టే','어떤 무서운','Descifra cualquier','どんな怖い'],
+  'Scary Document': ['डरावने दस्तावेज़ को समझें','吓人的文件','ఏ పత్రాన్నైనా అర్థం చేసుకోండి','서류든 해독!','documento aterrador','書類も解読'],
+  'Explain in:': ['भाषा:','讲解语言：','భాష:','설명 언어:','Explicar en:','説明の言語:'],
+  'Scan Document': ['दस्तावेज़ स्कैन करें','扫描文件','పత్రాన్ని స్కాన్ చేయండి','문서 스캔','Escanear documento','書類をスキャン'],
+  'Paste Email / Text': ['ईमेल / टेक्स्ट पेस्ट करें','粘贴邮件/文字','ఇమెయిల్ / టెక్స్ట్ అతికించండి','이메일 / 텍스트 붙여넣기','Pegar correo / texto','メール／テキストを貼り付け'],
+  'Upload a File': ['फ़ाइल अपलोड करें','上传文件','ఫైల్ అప్‌లోడ్ చేయండి','파일 업로드','Subir un archivo','ファイルをアップロード'],
+  'Try these examples': ['ये उदाहरण आज़माएँ','试试这些示例','ఈ ఉదాహరణలు ప్రయత్నించండి','예시 보기','Prueba estos ejemplos','例を試す'],
+  'Scan': ['स्कैन','扫描','స్కాన్','스캔','Escanear','スキャン'],
+  'Results': ['नतीजे','结果','ఫలితాలు','결과','Resultados','結果'],
+  'History': ['इतिहास','历史','చరిత్ర','기록','Historial','履歴'],
+  'What this actually means for you:': ['इसका आपके लिए असल मतलब:','这对你的实际意义：','దీని అర్థం మీకు నిజంగా:','이것이 실제로 의미하는 것:','Lo que esto significa para ti:','あなたにとっての意味：'],
+  'Jargon Glossary — Friend-Speak': ['कठिन शब्दों की सरल भाषा','术语通俗解释','కఠిన పదాల సులభ భాష','어려운 용어 쉬운 말로','Glosario en lenguaje sencillo','難しい言葉をやさしく'],
+  'Red Flags — Watch Out For These': ['खतरे के संकेत — इनसे सावधान','风险提示——请留意','హెచ్చరికలు — వీటిపై జాగ్రత్త','주의할 점 — 꼭 확인하세요','Alertas — ten cuidado con esto','注意点 — ここに気をつけて'],
+  'Translation Map — Before & After': ['पहले और बाद में सरल रूप','原文与通俗版对照','ముందు & తర్వాత — సులభ రూపం','원문과 쉬운 말 비교','Antes y después en palabras simples','元の文とやさしい言い換え'],
+  'Draft a Follow-Up Question': ['फ़ॉलो-अप सवाल का ड्राफ़्ट','起草跟进问题','ఫాలో-అప్ ప్రశ్న డ్రాఫ్ట్','후속 질문 작성','Redactar una pregunta de seguimiento','確認の質問を下書き'],
+  'Share This Analysis': ['यह विश्लेषण शेयर करें','分享此分析','ఈ విశ్లేషణను షేర్ చేయండి','분석 공유','Compartir este análisis','この分析を共有'],
+  'Save as Text File': ['टेक्स्ट फ़ाइल में सेव करें','保存为文本文件','టెక్స్ట్ ఫైల్‌గా సేవ్ చేయండి','텍스트 파일로 저장','Guardar como archivo de texto','テキストで保存'],
+  'Scan Another Document': ['दूसरा दस्तावेज़ स्कैन करें','扫描另一份文件','మరో పత్రాన్ని స్కాన్ చేయండి','다른 문서 스캔','Escanear otro documento','別の書類をスキャン'],
+  'Read Aloud': ['ज़ोर से पढ़ें','朗读','బిగ్గరగా చదవండి','소리내어 읽기','Leer en voz alta','読み上げ'],
+  'Stop Reading': ['पढ़ना रोकें','停止朗读','చదవడం ఆపండి','읽기 중지','Detener lectura','読み上げ停止'],
+  'Point camera at any confusing text': ['किसी भी उलझे टेक्स्ट पर कैमरा घुमाएँ','对准任何看不懂的文字','అర్థం కాని ఏ టెక్స్ట్‌పైనైనా కెమెరా చూపండి','이해하기 어려운 글에 카메라를 대세요','Apunta la cámara a cualquier texto confuso','わかりにくい文章にカメラを向けてください'],
+  'Copy & paste from any app': ['किसी भी ऐप से कॉपी-पेस्ट करें','从任何应用复制粘贴','ఏ యాప్ నుండైనా కాపీ-పేస్ట్ చేయండి','어떤 앱에서든 복사해 붙여넣기','Copia y pega desde cualquier app','どのアプリからでもコピー＆ペースト'],
+  'Images, PDFs, or text files': ['इमेज, PDF या टेक्स्ट फ़ाइलें','图片、PDF或文本文件','చిత్రాలు, PDFలు లేదా టెక్స్ట్ ఫైళ్లు','이미지, PDF 또는 텍스트 파일','Imágenes, PDF o archivos de texto','画像、PDF、テキストファイル'],
+  'Reading between the lines…': ['पंक्तियों के बीच पढ़ रहे हैं…','正在读懂字里行间…','పంక్తుల మధ్య చదువుతున్నాం…','행간을 읽는 중…','Leyendo entre líneas…','行間を読んでいます…'],
+  'Reading document text': ['दस्तावेज़ का टेक्स्ट पढ़ना','读取文件文字','పత్రం టెక్స్ట్ చదవడం','문서 텍스트 읽기','Leyendo el texto','書類の文字を読み取り'],
+  'Processing content': ['सामग्री समझना','处理内容','కంటెంట్ ప్రాసెస్ చేయడం','내용 처리','Procesando el contenido','内容を処理'],
+  'Spotting red flags': ['खतरे के संकेत ढूँढना','查找风险点','హెచ్చరికలు గుర్తించడం','주의할 점 찾기','Buscando alertas','注意点を確認'],
+  'Building your glossary': ['शब्दावली बनाना','生成术语表','పదకోశం తయారు చేయడం','용어집 만들기','Creando tu glosario','用語集を作成'],
+  'Writing plain English': ['सरल भाषा लिखना','撰写通俗说明','సులభ భాషలో రాయడం','쉬운 말로 쓰기','Escribiendo en lenguaje sencillo','やさしい言葉で作成'],
+  'Your History': ['आपका इतिहास','你的历史记录','మీ చరిత్ర','내 기록','Tu historial','履歴'],
+  'Export': ['एक्सपोर्ट','导出','ఎగుమతి','내보내기','Exportar','書き出し'],
+  "You're offline — previous analyses still available": ['आप ऑफ़लाइन हैं — पुराने विश्लेषण उपलब्ध हैं','你已离线——之前的分析仍可查看','మీరు ఆఫ్‌లైన్‌లో ఉన్నారు — పాత విశ్లేషణలు అందుబాటులో ఉన్నాయి','오프라인 상태 — 이전 분석은 볼 수 있어요','Sin conexión — tus análisis anteriores siguen disponibles','オフラインです — 過去の分析は見られます'],
+  'Oops! Something broke.': ['अरे! कुछ गड़बड़ हो गई।','哎呀！出错了。','అయ్యో! ఏదో తప్పు జరిగింది.','앗! 문제가 생겼어요.','¡Vaya! Algo salió mal.','おっと！問題が起きました。'],
+  'Restart App': ['ऐप फिर शुरू करें','重启应用','యాప్ రీస్టార్ట్ చేయండి','앱 다시 시작','Reiniciar app','アプリを再起動'],
+  'Settings': ['सेटिंग्स','设置','సెట్టింగ్స్','설정','Ajustes','設定'],
+  'App Theme': ['ऐप थीम','应用主题','యాప్ థీమ్','앱 테마','Tema de la app','アプリのテーマ'],
+  'Save History': ['इतिहास सेव करें','保存历史记录','చరిత్రను సేవ్ చేయండి','기록 저장','Guardar historial','履歴を保存'],
+  'Simple Word Mode': ['सरल शब्द मोड','简单词汇模式','సరళ పద మోడ్','쉬운 단어 모드','Modo palabras simples','やさしい言葉モード'],
+  'Image Auto-Enhance': ['इमेज ऑटो-सुधार','图片自动增强','చిత్రం ఆటో-మెరుగుదల','이미지 자동 보정','Mejora automática de imagen','画像の自動補正'],
+  'Haptic Feedback': ['कंपन फ़ीडबैक','触感反馈','వైబ్రేషన్ ఫీడ్‌బ్యాక్','진동 피드백','Respuesta háptica','振動フィードバック'],
+  'Delete All My Data': ['मेरा सारा डेटा मिटाएँ','删除我的所有数据','నా డేటా మొత్తం తొలగించండి','내 데이터 모두 삭제','Borrar todos mis datos','すべてのデータを削除'],
+  'Wipe': ['मिटाएँ','清除','తొలగించు','삭제','Borrar','削除']
+};
+const UI_STRINGS = ["You're offline — previous analyses still available", "SIMPLE MODE ON", "Oops! Something broke.", "Don't worry — your data is safe. Let's restart the app and try again.", "Restart App", "Dismiss", "EasyEnglish", "Decode Any", "Scary Document", "Legal letters, work contracts, rental agreements — we'll translate the confusing stuff into plain language.", "Explain in:", "Add to Home Screen", "for faster access anytime.", "Install", "Connect AI (Optional)", "Add your free Google Gemini API key for real AI translations. Without it, we'll show you a sample analysis.", "Save Key", "Use Demo Mode", "Sharpening…", "Scan Document", "Point camera at any confusing text", "or", "Paste Email / Text", "Copy & paste from any app", "Upload a File", "Images, PDFs, or text files", "Try these examples", "Reading between the lines…", "0%", "Translating legal speak into human speak. Hang tight!", "Reading document text", "Processing content", "Spotting red flags", "Building your glossary", "Writing plain English", "No Results Yet", "Start an analysis or upload a document to see your plain English results here.", "Start Analysis", "Your History", "Export", "Paste Your Text", "0 words", "Cancel", "Decode It!", "Your Follow-Up Question", "Copy this and send it to your bank, landlord, boss, or whoever sent you the confusing document.", "Loading…", "Copy", "Close", "Settings", "Gemini API Key", "Not set — using demo mode", "Change", "App Theme", "Choose visual appearance", "System Default", "Light Mode", "Dark Mode", "Save History", "Keep past analyses on this device", "Simple Word Mode", "Replaces hard words throughout the app", "Image Auto-Enhance", "Sharpen & fix photos before sending to AI", "Haptic Feedback", "Feel vibrations on button presses", "Delete All My Data", "Wipes history, API key & all saved data", "Wipe", "Developer Logs", "View internal diagnostic logs", "View Logs", "Export Logs", "Download diagnostic log file", "Privacy Disclosure:", "Text submitted for translation is processed by Google Gemini. On our free version, this data may be used by the provider to improve AI services.", "View Full Privacy Policy", "Not legal advice.", "Results are AI-generated for educational purposes only.", "Always consult a licensed attorney for legal decisions.", "EasyEnglish v3.0.0 — Data stays on your device.", "Scan", "Results", "History", "App error", "View history", "Capture document", "Language for explanations", "Paste your Gemini API key here...", "Optimizing image", "Scan document with camera", "Paste text to translate", "Upload a file", "Processing document", "Analysis results", "Paste text", "Paste the confusing text here… lease agreements, work emails, terms of service, anything that made you go 'huh?'", "Draft email", "Main navigation", "What this actually means for you:", "Read Aloud", "AI Confidence", "Jargon Glossary — Friend-Speak", "Red Flags — Watch Out For These", "No major red flags found!", "This document looks pretty straightforward — nice.", "Translation Map — Before & After", "Draft a Follow-Up Question", "Share This Analysis", "Save as Text File", "Scan Another Document", "Results are AI-generated for educational purposes only and may contain errors. Always consult a licensed attorney before making legal decisions. Text submitted is processed securely using Google Gemini API.", "Read aloud is not supported on this device", "Nothing to read yet", "No", "Could not read aloud", "Could not export logs", "All your data has been completely deleted.", "App updated! Refresh for the latest version.", "EasyEnglish installed!", "Installing…", "Please paste your API key", "API key saved!", "Could not read that file. Please try another.", "Please paste some text first!", "Please enter at least 5 words to analyze.", "AI failed — showing sample result", "Copied!", "No draft available yet", "Copied to clipboard!", "Please select and copy the text manually.", "Analysis copied to clipboard!", "Could not share analysis", "Analysis saved!", "Could not save file", "Removed", "History cleared", "No history to export", "Export failed", "Lease clause", "App Terms", "Medical form", "Job contract", "NDA", "Auto-Renewal", "Liability Waiver", "Non-Compete", "Credit Card", "Mortgage terms", "Insurance policy", "Freelance deal", "Gym membership", "Eviction notice", "Car purchase", "Privacy policy", "Arbitration", "Bank fee notice", "Contractor work", "Settlement offer", "Copyright notice", "SUMMARY —", "GLOSSARY —", "RED FLAGS —", "TRANSLATIONS —", "DRAFT EMAIL —", "No red flags found.", "High confidence", "Moderate confidence", "Low confidence — verify manually", "No analyses yet.", "Scan your first document to get started!", "Translating the app… one moment", "Some text could not be translated. Try again with a better connection.", "Done", "Connect to the internet once to translate the whole app"];
+const UI_SET = new Set(UI_STRINGS.concat(Object.keys(I18N)));
+const eeMem = {};
+function eeTable(c) {
+  if (!eeMem[c]) { try { eeMem[c] = JSON.parse(localStorage.getItem('ee_i18n_' + c) || '{}'); } catch (e) { eeMem[c] = {}; } }
+  return eeMem[c];
+}
+function t(s) {
+  const c = getLang();
+  if (c === 'en') return s;
+  const i = I18N_ORDER.indexOf(c);
+  return (I18N[s] && I18N[s][i]) || eeTable(c)[s] || s;
+}
+// Like t(), but keeps leading emoji/punctuation and trailing spaces. Use this for strings written in code.
+function tx(s) {
+  const m = String(s).match(/^([^\p{L}\p{N}]*)([\s\S]*?)(\s*)$/u);
+  return m[1] + t(m[2].replace(/\s+/g, ' ')) + m[3];
+}
+// Translates every interface string that has no built-in translation, using your backend, then caches it on the device.
+async function ensureTranslations(code) {
+  if (code === 'en') return;
+  const table = eeTable(code);
+  const i = I18N_ORDER.indexOf(code);
+  const missing = UI_STRINGS.filter(k => !(I18N[k] && I18N[k][i]) && !table[k]);
+  if (!missing.length) return;
+  if (!navigator.onLine) { showToast('⚠️ Connect to the internet once to translate the whole app'); return; }
+  showToast('🌐 Translating the app… one moment', 8000);
+  let failed = false;
+  for (let s = 0; s < missing.length; s += 40) {
+    const chunk = missing.slice(s, s + 40);
+    try {
+      const res = await fetch('https://easyenglish-api.vercel.app/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: `Translate these app interface strings into simple, natural ${LANGUAGES[code].name}. Return ONLY a raw JSON array of exactly ${chunk.length} strings in the same order (no markdown, no code fences). Keep emoji, numbers, and the names EasyEnglish, Gemini and PDF unchanged.\n\n${JSON.stringify(chunk)}` })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      const data = await res.json();
+      const txt = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const arr = JSON.parse(txt.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim());
+      if (!Array.isArray(arr) || arr.length !== chunk.length) throw new Error('Bad translation format');
+      chunk.forEach((k, j) => { if (typeof arr[j] === 'string' && arr[j].trim()) table[k] = arr[j].trim(); });
+      localStorage.setItem('ee_i18n_' + code, JSON.stringify(table));
+      if (getLang() === code) applyI18n();
+    } catch (e) { failed = true; EE_CORE.error('LANG', 'Translation failed', e.message); }
+  }
+  showToast(failed ? '⚠️ Some text could not be translated. Try again with a better connection.' : '✅ Done');
+}
+// Swaps any text node whose English text is a key in I18N. Emoji and spacing around the text are kept.
+function applyI18n() {
+  document.documentElement.lang = getLang();
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(n => {
+    if (/^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName)) return;
+    if (n._ee === undefined) {
+      const m = n.nodeValue.match(/^([^\p{L}\p{N}]*)([\s\S]*?)(\s*)$/u);
+      const k = m ? m[2].replace(/\s+/g, ' ') : '';
+      n._ee = k && UI_SET.has(k) ? { lead: m[1], key: k, trail: m[3] } : null;
+    }
+    if (n._ee) n.nodeValue = n._ee.lead + t(n._ee.key) + n._ee.trail;
+  });
+  document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el => {
+    el._eeA = el._eeA || {};
+    ['placeholder', 'title', 'aria-label'].forEach(a => {
+      if (!el.hasAttribute(a)) return;
+      if (!(a in el._eeA)) el._eeA[a] = el.getAttribute(a).replace(/\s+/g, ' ').trim();
+      if (UI_SET.has(el._eeA[a])) el.setAttribute(a, t(el._eeA[a]));
+    });
+  });
+}
+
+function getLang() {
+  const saved = localStorage.getItem('ee_lang');
+  return LANGUAGES[saved] ? saved : 'en';
+}
+function setLang(code) {
+  if (!LANGUAGES[code]) code = 'en';
+  localStorage.setItem('ee_lang', code);
+  EE_CORE.info('LANG', 'Language set to ' + code);
+  applyI18n();
+  ensureTranslations(code);
+}
+function initLanguage() {
+  const sel = document.getElementById('lang-select');
+  if (!sel) return;
+  sel.innerHTML = Object.entries(LANGUAGES).map(([code, l]) => `<option value="${code}">${l.label}</option>`).join('');
+  sel.value = getLang();
+  applyI18n();
+  ensureTranslations(getLang());
+}
+function languageRules() {
+  const code = getLang();
+  if (code === 'en') return '';
+  const n = LANGUAGES[code].name;
+  return `
+- LANGUAGE: Write these fields in ${n}: headline, bottomLine, glossary "simple" and "explain", redFlags "title" and "description", translations "simple". Use simple everyday ${n}.
+- Keep every JSON key in English. Keep the "emoji" field a single emoji.
+- Keep glossary "jargon" and translations "original" exactly as they appear in the document.
+- Write "draftEmail" in the same language as the original document (not ${n}) so the person who sent the document can read it.
+- Keep numbers, dates, dollar amounts and names exactly as written.`;
+}
+
+function buildSpeechText(r) {
+  const parts = [r.headline, r.bottomLine];
+  (r.redFlags || []).forEach(f => parts.push(f.title + '. ' + f.description));
+  return parts.filter(Boolean).join('\n');
+}
+function splitForSpeech(text) {
+  const clean = text.replace(/[\p{Extended_Pictographic}\uFE0F]/gu, '').replace(/[ \t]+/g, ' ').trim();
+  const sentences = clean.match(/[^.!?。！？।\n]+[.!?。！？।]*/g) || [];
+  const chunks = [];
+  let cur = '';
+  sentences.forEach(s => {
+    if (cur && (cur + s).length > 180) { chunks.push(cur.trim()); cur = ''; }
+    cur += s + ' ';
+  });
+  if (cur.trim()) chunks.push(cur.trim());
+  return chunks.filter(c => /[\p{L}\p{N}]/u.test(c));
+}
+function pickVoice(tag) {
+  const voices = window.speechSynthesis.getVoices() || [];
+  const norm = v => v.lang.replace('_', '-').toLowerCase();
+  const full = tag.toLowerCase();
+  const base = full.split('-')[0];
+  return voices.find(v => norm(v) === full) || voices.find(v => norm(v).split('-')[0] === base) || null;
+}
+function updateReadAloudButton() {
+  const btn = document.getElementById('read-aloud-btn');
+  if (btn) btn.textContent = readAloudActive ? '⏹ ' + t('Stop Reading') : '🔊 ' + t('Read Aloud');
+}
+function stopReadAloud() {
+  readAloudSession++;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  readAloudActive = false;
+  updateReadAloudButton();
+}
+function toggleReadAloud() {
+  if (!('speechSynthesis' in window)) { showToast('⚠️ Read aloud is not supported on this device'); return; }
+  if (readAloudActive) { stopReadAloud(); return; }
+  if (!currentAnalysis) return;
+  const code = LANGUAGES[currentAnalysis.lang] ? currentAnalysis.lang : 'en';
+  const tag = LANGUAGES[code].voice;
+  const chunks = splitForSpeech(buildSpeechText(currentAnalysis));
+  if (!chunks.length) { showToast('Nothing to read yet'); return; }
+  const voice = pickVoice(tag);
+  if (!voice && code !== 'en') showToast('⚠️ No ' + LANGUAGES[code].name + ' voice found. Add one in your phone\'s text-to-speech settings.', 5000);
+  stopReadAloud();
+  const session = readAloudSession;
+  readAloudActive = true;
+  updateReadAloudButton();
+  chunks.forEach((chunk, i) => {
+    const u = new SpeechSynthesisUtterance(chunk);
+    u.lang = tag;
+    if (voice) u.voice = voice;
+    u.rate = 0.9;
+    if (i === chunks.length - 1) {
+      u.onend = () => { if (session !== readAloudSession) return; readAloudActive = false; updateReadAloudButton(); };
+    }
+    u.onerror = e => {
+      if (session !== readAloudSession) return;
+      if (e.error !== 'canceled' && e.error !== 'interrupted') {
+        EE_CORE.error('SPEECH', 'Read aloud failed', e.error);
+        showToast('⚠️ Could not read aloud');
+      }
+      readAloudActive = false;
+      updateReadAloudButton();
+    };
+    window.speechSynthesis.speak(u);
+  });
+  EE_CORE.info('SPEECH', 'Reading aloud in ' + tag + ' (' + chunks.length + ' chunks)');
+}
 const EMBEDDED_API_KEY = 'AIzaSyBFQnT47VZDc0j1bEn_2vvEBFnSWXFeocU';
 
   
@@ -1012,6 +1251,7 @@ function showScreen(name) {
     }
 }
 function navTo(screen, navId) {
+  stopReadAloud();
   showScreen(screen);
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(navId)?.classList.add('active');
@@ -1356,7 +1596,7 @@ async function runAnalysis(input) {
   document.getElementById('processing-percent').textContent = '100%';
   await delay(400);
 
-  currentAnalysis = { ...result, label: input.label, date: new Date().toISOString(), elapsed };
+  currentAnalysis = { ...result, label: input.label, date: new Date().toISOString(), elapsed, lang: result.lang || getLang() };
   if (localStorage.getItem('history-toggle') !== 'false') saveToHistory(currentAnalysis);
 
   renderResult(currentAnalysis);
@@ -1426,7 +1666,7 @@ Rules:
 - redFlags: clauses that cost money, waive rights, lock-in, or restrict freedom. Empty array if none.
 - translations: 2-4 most confusing sentences, rewritten simply
 - Tone: helpful, slightly witty, like a smart friend over coffee. Never scary.
-- All output text must be readable by a 6th grader.
+- All output text must be readable by a 6th grader.${languageRules()}
 
 TEXT TO ANALYZE:
 ${text}`;
@@ -1437,6 +1677,7 @@ ${text}`;
 // ═══════════════════════════════════════════════════════════
 function getDemoResult(label) {
   return {
+    lang: 'en',
     emoji: '⚠️',
     headline: "Heads up: this document has some things worth knowing about.",
     bottomLine: "This looks like a legal agreement. There are a few parts where you give up some rights or agree to pay money. Keep reading — we broke it all down for you.",
@@ -1477,16 +1718,18 @@ Best,
 // ── RENDER RESULT ──
 // ═══════════════════════════════════════════════════════════
 function renderResult(r) {
+  stopReadAloud();
   EE_CORE.info('RENDER', 'Rendering results to UI');
   const confScore   = r.confidenceScore || 80;
   const confColor   = confScore >= 75 ? '#2ed573' : confScore >= 50 ? '#ffa502' : '#ff4757';
-  const confLabel   = confScore >= 75 ? 'High confidence' : confScore >= 50 ? 'Moderate confidence' : 'Low confidence — verify manually';
+  const confLabel   = confScore >= 75 ? tx('High confidence') : confScore >= 50 ? tx('Moderate confidence') : tx('Low confidence — verify manually');
   const el = document.getElementById('screen-result');
   el.innerHTML = `
     <div class="result-headline fade-in">
       <div class="emoji">${r.emoji || '📋'}</div>
       <h2>${escHtml(r.headline)}</h2>
       <p class="bottom-line"><strong>What this actually means for you:</strong> ${escHtml(r.bottomLine)}</p>
+      <button type="button" class="action-btn action-secondary" id="read-aloud-btn" style="margin-top:12px" onclick="toggleReadAloud(); haptic.tap();" aria-label="Read results aloud">🔊 Read Aloud</button>
       <div class="confidence-bar-wrap">
         <div class="confidence-label">
           <span>🎯 AI Confidence</span>
@@ -1567,6 +1810,7 @@ function renderResult(r) {
     </div>
   `;
 
+  applyI18n();
   // Animate confidence bar
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -1664,18 +1908,18 @@ function exportAnalysis() {
   'Generated: ' + new Date(currentAnalysis.date).toLocaleString(),
   'Document: ' + currentAnalysis.label,
   '',
-  '— SUMMARY —',
+  tx('— SUMMARY —'),
   '',
-  '— GLOSSARY —',
+  tx('— GLOSSARY —'),
   ...(currentAnalysis.glossary || []).map(g => '"' + g.jargon + '" = ' + g.simple + '\n ' + g.explain),
   '',
-  '— RED FLAGS —',
-  ...(currentAnalysis.redFlags?.length ? currentAnalysis.redFlags.map(f => '⚠️ ' + f.title + '\n ' + f.description) : ['No red flags found.']),
+  tx('— RED FLAGS —'),
+  ...(currentAnalysis.redFlags?.length ? currentAnalysis.redFlags.map(f => '⚠️ ' + f.title + '\n ' + f.description) : [tx('No red flags found.')]),
   '',
-  '— TRANSLATIONS —',
+  tx('— TRANSLATIONS —'),
   ...(currentAnalysis.translations || []).map(t => 'Original: ' + t.original + '\nSimple: ' + t.simple),
   '',
-  '— DRAFT EMAIL —',
+  tx('— DRAFT EMAIL —'),
   currentAnalysis.draftEmail || '',
 ];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
@@ -1722,6 +1966,7 @@ function renderHistory() {
   const el = document.getElementById('history-list');
   if (!history.length) {
     el.innerHTML = '<div class="history-empty">📭<br/><br/>No analyses yet.<br/>Scan your first document to get started!</div>';
+    applyI18n();
     return;
   }
   el.innerHTML = history.map(h => `
@@ -1732,6 +1977,7 @@ function renderHistory() {
       <p>${escHtml(h.bottomLine || 'Tap to view details')}</p>
       <div class="history-date">${new Date(h.date).toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
     </div>`).join('');
+  applyI18n();
 }
 
 function loadHistoryItem(id) {
@@ -1833,11 +2079,11 @@ function renderLogViewer() {
 // ── TOAST ──
 // ═══════════════════════════════════════════════════════════
 function showToast(msg, duration=3200) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), duration);
+  const el = document.getElementById('toast');
+  el.textContent = tx(msg);
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), duration);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1923,7 +2169,8 @@ EE_CORE.info('APP', `EasyEnglish v3.0.0 started`, {
 
 // — HANDLE SHORTCUT ACTIONS —
 window.addEventListener('DOMContentLoaded', () => {
-    initTheme(); // <-- ADD THIS LINE HERE
+    initTheme();
+    initLanguage();
     const urlParams = new URLSearchParams(window.location.search);
     const action = urlParams.get('action');
     const splash = document.getElementById('splash');
